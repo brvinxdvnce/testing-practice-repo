@@ -27,4 +27,8 @@
       <ProjectReference Include="..\Testing-Practice.Infrastructure\Testing-Practice.Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="wwwroot\" />
+    </ItemGroup>
+
 </Project>

@@ -21,6 +21,60 @@ public class DishesController : ControllerBase
         _dishRepository = dishRepository;
     }
 
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<Dish>>> GetAll(
+        [FromQuery] string? search,
+        [FromQuery] DishCategory? category,
+        [FromQuery] ProductFlags? flags,
+        [FromQuery] string? sortBy,      // "name", "calories", "proteins", "fats", "carbohydrates"
+        [FromQuery] bool sortDesc = false)
+    {
+        var dishes = await _dishService.GetAllAsync(search, category, flags, sortBy, sortDesc);
+        return Ok(dishes);
+    }
+    
+    [HttpPut("{id}")]
+    public async Task<ActionResult<Dish>> Update(Guid id, DishUpdateDto dto)
+    {
+        var existing = await _dishRepository.GetByIdAsync(id);
+        if (existing == null) return NotFound();
+
+        // Обновляем поля из DTO
+        if (dto.Name != null) existing.Name = dto.Name;
+        if (dto.PortionSize.HasValue) existing.PortionSize = dto.PortionSize.Value;
+        if (dto.Photos != null) existing.Photos = dto.Photos;
+        if (dto.Category.HasValue) existing.Category = dto.Category.Value;
+        if (dto.Ingredients != null)
+        {
+            existing.Ingredients = dto.Ingredients.Select(i => new DishIngredient
+            {
+                ProductId = i.ProductId,
+                Amount = i.Amount
+            }).ToList();
+        }
+
+        bool isCategoryExplicitlySet = dto.Category.HasValue;
+
+        await _dishService.UpdateAsync(existing, isCategoryExplicitlySet);
+
+        // Перезаписываем ручными значениями КБЖУ, если переданы
+        if (dto.Calories.HasValue) existing.Calories = dto.Calories.Value;
+        if (dto.Proteins.HasValue) existing.Proteins = dto.Proteins.Value;
+        if (dto.Fats.HasValue) existing.Fats = dto.Fats.Value;
+        if (dto.Carbohydrates.HasValue) existing.Carbohydrates = dto.Carbohydrates.Value;
+
+        if (dto.Flags.HasValue) existing.Flags = dto.Flags.Value;
+        
+        return Ok(existing);
+    }
+    
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        await _dishService.DeleteAsync(id);
+        return NoContent();
+    }
+    
     [HttpPost]
     public async Task<ActionResult<Dish>> Create(DishCreateDto dto)
     {
@@ -49,6 +103,8 @@ public class DishesController : ControllerBase
         if (dto.Fats.HasValue) dish.Fats = dto.Fats.Value;
         if (dto.Carbohydrates.HasValue) dish.Carbohydrates = dto.Carbohydrates.Value;
 
+        if (dto.Flags.HasValue) dish.Flags = dto.Flags.Value;
+        
         return CreatedAtAction(nameof(GetById), new { id = dish.Id }, dish);
     }
 

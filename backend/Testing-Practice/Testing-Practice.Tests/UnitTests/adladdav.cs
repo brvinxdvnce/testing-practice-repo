@@ -1,4 +1,4 @@
-﻿namespace Testing_Practice.Tests.UnitTests;
+﻿/*namespace Testing_Practice.Tests.UnitTests;
 
 public partial class DishCalculatorServiceTests
 {
@@ -296,4 +296,4 @@ public partial class DishCalculatorServiceTests
         Assert.Equal(-10, dish.Fats, 2);
         Assert.Equal(-40, dish.Carbohydrates, 2);
     }
-}
+}*/

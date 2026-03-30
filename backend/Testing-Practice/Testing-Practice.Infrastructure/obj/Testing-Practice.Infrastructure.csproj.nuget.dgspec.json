@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\danil\\Desktop\\Testing-Practice\\Testing-Practice.Infrastructure\\Testing-Practice.Infrastructure.csproj": {}
+    "C:\\Users\\danil\\Desktop\\testing-practice-repo\\backend\\Testing-Practice\\Testing-Practice.Infrastructure\\Testing-Practice.Infrastructure.csproj": {}
   },
   "projects": {
-    "C:\\Users\\danil\\Desktop\\Testing-Practice\\Testing-Practice.Domain\\Testing-Practice.Domain.csproj": {
+    "C:\\Users\\danil\\Desktop\\testing-practice-repo\\backend\\Testing-Practice\\Testing-Practice.Domain\\Testing-Practice.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\danil\\Desktop\\Testing-Practice\\Testing-Practice.Domain\\Testing-Practice.Domain.csproj",
+        "projectUniqueName": "C:\\Users\\danil\\Desktop\\testing-practice-repo\\backend\\Testing-Practice\\Testing-Practice.Domain\\Testing-Practice.Domain.csproj",
         "projectName": "Testing-Practice.Domain",
-        "projectPath": "C:\\Users\\danil\\Desktop\\Testing-Practice\\Testing-Practice.Domain\\Testing-Practice.Domain.csproj",
+        "projectPath": "C:\\Users\\danil\\Desktop\\testing-practice-repo\\backend\\Testing-Practice\\Testing-Practice.Domain\\Testing-Practice.Domain.csproj",
         "packagesPath": "C:\\Users\\danil\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\danil\\Desktop\\Testing-Practice\\Testing-Practice.Domain\\obj\\",
+        "outputPath": "C:\\Users\\danil\\Desktop\\testing-practice-repo\\backend\\Testing-Practice\\Testing-Practice.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\danil\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -339,14 +339,14 @@
         }
       }
     },
-    "C:\\Users\\danil\\Desktop\\Testing-Practice\\Testing-Practice.Infrastructure\\Testing-Practice.Infrastructure.csproj": {
+    "C:\\Users\\danil\\Desktop\\testing-practice-repo\\backend\\Testing-Practice\\Testing-Practice.Infrastructure\\Testing-Practice.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\danil\\Desktop\\Testing-Practice\\Testing-Practice.Infrastructure\\Testing-Practice.Infrastructure.csproj",
+        "projectUniqueName": "C:\\Users\\danil\\Desktop\\testing-practice-repo\\backend\\Testing-Practice\\Testing-Practice.Infrastructure\\Testing-Practice.Infrastructure.csproj",
         "projectName": "Testing-Practice.Infrastructure",
-        "projectPath": "C:\\Users\\danil\\Desktop\\Testing-Practice\\Testing-Practice.Infrastructure\\Testing-Practice.Infrastructure.csproj",
+        "projectPath": "C:\\Users\\danil\\Desktop\\testing-practice-repo\\backend\\Testing-Practice\\Testing-Practice.Infrastructure\\Testing-Practice.Infrastructure.csproj",
         "packagesPath": "C:\\Users\\danil\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\danil\\Desktop\\Testing-Practice\\Testing-Practice.Infrastructure\\obj\\",
+        "outputPath": "C:\\Users\\danil\\Desktop\\testing-practice-repo\\backend\\Testing-Practice\\Testing-Practice.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\danil\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -363,8 +363,8 @@
           "net10.0": {
             "targetAlias": "net10.0",
             "projectReferences": {
-              "C:\\Users\\danil\\Desktop\\Testing-Practice\\Testing-Practice.Domain\\Testing-Practice.Domain.csproj": {
-                "projectPath": "C:\\Users\\danil\\Desktop\\Testing-Practice\\Testing-Practice.Domain\\Testing-Practice.Domain.csproj"
+              "C:\\Users\\danil\\Desktop\\testing-practice-repo\\backend\\Testing-Practice\\Testing-Practice.Domain\\Testing-Practice.Domain.csproj": {
+                "projectPath": "C:\\Users\\danil\\Desktop\\testing-practice-repo\\backend\\Testing-Practice\\Testing-Practice.Domain\\Testing-Practice.Domain.csproj"
               }
             }
           }

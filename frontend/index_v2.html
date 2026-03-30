@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Книга рецептов - тестовый клиент</title>
+    <style>
+        /* минимальные стили для читаемости */
+        body { font-family: sans-serif; margin: 20px; }
+        section { margin-bottom: 40px; }
+        button, input, select, textarea { margin: 5px; }
+        .error { color: red; }
+        .success { color: green; }
+        table { border-collapse: collapse; width: 100%; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: left; }
+        .hidden { display: none; }
+        .block { margin-bottom: 20px; }
+        hr { margin: 20px 0; }
+        pre { background: #f4f4f4; padding: 10px; overflow: auto; }
+        #photoList { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        #photoList div { text-align: center; }
+        #photoList img { max-width: 100px; max-height: 100px; border: 1px solid #ccc; padding: 2px; background: #f9f9f9; }
+    </style>
+</head>
+<body>
+<h1>Книга рецептов</h1>
+
+<!-- Вкладки -->
+<div>
+    <button id="tabProductsBtn">Продукты</button>
+    <button id="tabDishesBtn">Блюда</button>
+</div>
+<hr>
+
+<!-- Раздел продуктов -->
+<div id="productsSection">
+    <h2>Продукты</h2>
+
+    <!-- Фильтры и сортировка -->
+    <div class="block">
+        <input type="text" id="productSearch" placeholder="Поиск по названию">
+        <select id="productCategoryFilter">
+            <option value="">Все категории</option>
+            <option value="0">Замороженный</option>
+            <option value="1">Мясной</option>
+            <option value="2">Овощи</option>
+            <option value="3">Зелень</option>
+            <option value="4">Специи</option>
+            <option value="5">Крупы</option>
+            <option value="6">Консервы</option>
+            <option value="7">Жидкость</option>
+            <option value="8">Сладости</option>
+        </select>
+        <select id="productCookingFilter">
+            <option value="">Любая готовка</option>
+            <option value="0">Готовый к употреблению</option>
+            <option value="1">Полуфабрикат</option>
+            <option value="2">Требует приготовления</option>
+        </select>
+        <select id="productFlagsFilter">
+            <option value="">Все флаги</option>
+            <option value="1">Веган</option>
+            <option value="2">Без глютена</option>
+            <option value="4">Без сахара</option>
+        </select>
+        <select id="productSortBy">
+            <option value="name">Название</option>
+            <option value="calories">Калории</option>
+            <option value="proteins">Белки</option>
+            <option value="fats">Жиры</option>
+            <option value="carbohydrates">Углеводы</option>
+        </select>
+        <button id="applyProductFilters">Применить фильтры</button>
+        <button id="resetProductFilters">Сбросить</button>
+        <button id="newProductBtn">Новый продукт</button>
+    </div>
+
+    <!-- Список продуктов -->
+    <div>
+        <h3>Список продуктов</h3>
+        <table id="productsTable">
+            <thead>
+                <tr><th>Название</th><th>Калории</th><th>Белки</th><th>Жиры</th><th>Углеводы</th><th>Категория</th><th>Флаги</th><th>Действия</th></tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- Форма создания/редактирования продукта -->
+    <div id="productFormContainer" class="hidden">
+        <h3 id="productFormTitle">Создать продукт</h3>
+        <form id="productForm">
+            <input type="hidden" id="productId">
+            <div><label>Название: <input type="text" id="productName" required minlength="2"></label></div>
+            <div><label>Калории (на 100г): <input type="number" id="productCalories" step="any" min="0" required></label></div>
+            <div><label>Белки (на 100г): <input type="number" id="productProteins" step="any" min="0" max="100" required></label></div>
+            <div><label>Жиры (на 100г): <input type="number" id="productFats" step="any" min="0" max="100" required></label></div>
+            <div><label>Углеводы (на 100г): <input type="number" id="productCarbohydrates" step="any" min="0" max="100" required></label></div>
+            <div><label>Описание (состав): <textarea id="productDescription" rows="3"></textarea></label></div>
+            <div><label>Категория:
+                <select id="productCategory" required>
+                    <option value="0">Замороженный</option>
+                    <option value="1">Мясной</option>
+                    <option value="2">Овощи</option>
+                    <option value="3">Зелень</option>
+                    <option value="4">Специи</option>
+                    <option value="5">Крупы</option>
+                    <option value="6">Консервы</option>
+                    <option value="7">Жидкость</option>
+                    <option value="8">Сладости</option>
+                </select>
+            </label></div>
+            <div><label>Необходимость готовки:
+                <select id="productCooking" required>
+                    <option value="0">Готовый к употреблению</option>
+                    <option value="1">Полуфабрикат</option>
+                    <option value="2">Требует приготовления</option>
+                </select>
+            </label></div>
+            <div><label>Флаги (можно выбрать несколько):<br>
+                <input type="checkbox" value="1"> Веган
+                <input type="checkbox" value="2"> Без глютена
+                <input type="checkbox" value="4"> Без сахара
+            </label></div>
+            <div><button type="submit">Сохранить</button> <button type="button" id="cancelProductForm">Отмена</button></div>
+        </form>
+    </div>
+
+    <!-- Просмотр продукта -->
+    <div id="productDetailsContainer" class="hidden">
+        <h3>Детали продукта</h3>
+        <pre id="productDetails"></pre>
+        <button id="closeProductDetails">Закрыть</button>
+    </div>
+</div>
+
+<!-- Раздел блюд -->
+<div id="dishesSection" class="hidden">
+    <h2>Блюда</h2>
+
+    <!-- Фильтры и сортировка -->
+    <div class="block">
+        <input type="text" id="dishSearch" placeholder="Поиск по названию">
+        <select id="dishCategoryFilter">
+            <option value="">Все категории</option>
+            <option value="0">Десерт</option>
+            <option value="1">Первое</option>
+            <option value="2">Второе</option>
+            <option value="3">Напиток</option>
+            <option value="4">Салат</option>
+            <option value="5">Суп</option>
+            <option value="6">Перекус</option>
+        </select>
+        <select id="dishFlagsFilter">
+            <option value="">Все флаги</option>
+            <option value="1">Веган</option>
+            <option value="2">Без глютена</option>
+            <option value="4">Без сахара</option>
+        </select>
+        <select id="dishSortBy">
+            <option value="name">Название</option>
+            <option value="calories">Калории</option>
+            <option value="proteins">Белки</option>
+            <option value="fats">Жиры</option>
+            <option value="carbohydrates">Углеводы</option>
+        </select>
+        <label><input type="checkbox" id="dishSortDesc"> По убыванию</label>
+        <button id="applyDishFilters">Применить фильтры</button>
+        <button id="resetDishFilters">Сбросить</button>
+        <button id="newDishBtn">Новое блюдо</button>
+    </div>
+
+    <!-- Список блюд -->
+    <div>
+        <h3>Список блюд</h3>
+        <table id="dishesTable">
+            <thead><tr><th>Название</th><th>Калории</th><th>Белки</th><th>Жиры</th><th>Углеводы</th><th>Порция (г)</th><th>Категория</th><th>Флаги</th><th>Действия</th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div>
+
+    <!-- Форма создания/редактирования блюда -->
+    <div id="dishFormContainer" class="hidden">
+        <h3 id="dishFormTitle">Создать блюдо</h3>
+        <form id="dishForm">
+            <input type="hidden" id="dishId">
+            <div><label>Название: <input type="text" id="dishName" required minlength="2"></label></div>
+            <div><label>Размер порции (г): <input type="number" id="dishPortionSize" step="any" min="0.01" required></label></div>
+            <div><label>Категория:
+                <select id="dishCategory">
+                    <option value="0">Десерт</option>
+                    <option value="1">Первое</option>
+                    <option value="2">Второе</option>
+                    <option value="3">Напиток</option>
+                    <option value="4">Салат</option>
+                    <option value="5">Суп</option>
+                    <option value="6">Перекус</option>
+                </select>
+            </label></div>
+            <div><label>Фотографии (URL):<br>
+                <input type="text" id="dishPhotoUrl" placeholder="Вставьте URL картинки">
+                <button type="button" id="addPhotoBtn">Добавить</button>
+                <div id="photoList"></div>
+            </label></div>
+            <div><label>Загрузить новое изображение:<br>
+                <input type="file" id="dishImageFile" accept="image/*">
+                <button type="button" id="uploadImageBtn">Загрузить</button>
+            </label></div>
+            <div><label>Ингредиенты (продукт и количество в граммах):<br>
+                <select id="ingredientProductSelect"></select>
+                <input type="number" id="ingredientAmount" step="any" placeholder="Количество (г)">
+                <button type="button" id="addIngredientBtn">Добавить ингредиент</button>
+                <ul id="ingredientsList"></ul>
+            </label></div>
+            <div><label>КБЖУ (опционально, переопределяет расчёт):<br>
+                <input type="number" id="dishCalories" step="any" placeholder="Калории (ккал)">
+                <input type="number" id="dishProteins" step="any" placeholder="Белки (г)">
+                <input type="number" id="dishFats" step="any" placeholder="Жиры (г)">
+                <input type="number" id="dishCarbohydrates" step="any" placeholder="Углеводы (г)">
+            </label></div>
+            <div><label>Флаги (можно выбрать несколько):<br>
+                <input type="checkbox" value="1"> Веган
+                <input type="checkbox" value="2"> Без глютена
+                <input type="checkbox" value="4"> Без сахара
+            </label></div>
+            <div><button type="submit">Сохранить</button> <button type="button" id="cancelDishForm">Отмена</button></div>
+        </form>
+    </div>
+
+    <!-- Просмотр блюда -->
+    <div id="dishDetailsContainer" class="hidden">
+        <h3>Детали блюда</h3>
+        <pre id="dishDetails"></pre>
+        <button id="closeDishDetails">Закрыть</button>
+    </div>
+</div>
+
+<script>
+    const API_BASE = 'http://localhost:5006/api'; // измените порт при необходимости
+    let currentProducts = [];
+    let currentDishes = [];
+
+    // --- Вспомогательные функции ---
+    function showError(message) {
+        alert('Ошибка: ' + message);
+    }
+
+    function showSuccess(message) {
+        alert(message);
+    }
+
+    async function apiRequest(url, method, body) {
+        const headers = { 'Content-Type': 'application/json' };
+        const options = { method, headers };
+        if (body) options.body = JSON.stringify(body);
+        const response = await fetch(`${API_BASE}${url}`, options);
+        if (!response.ok) {
+            const error = await response.text();
+            throw new Error(error || response.statusText);
+        }
+        if (method === 'DELETE') return;
+        return response.json();
+    }
+
+    // --- Продукты ---
+    async function loadProducts() {
+        const search = document.getElementById('productSearch').value;
+        const category = document.getElementById('productCategoryFilter').value;
+        const cooking = document.getElementById('productCookingFilter').value;
+        let flags = document.getElementById('productFlagsFilter').value;
+        const sortBy = document.getElementById('productSortBy').value;
+
+        let url = `/products?sortBy=${sortBy}`;
+        if (search) url += `&search=${encodeURIComponent(search)}`;
+        if (category) url += `&category=${category}`;
+        if (cooking) url += `&cooking=${cooking}`;
+        if (flags) url += `&flags=${flags}`;
+
+        try {
+            currentProducts = await apiRequest(url, 'GET');
+            renderProducts();
+        } catch (err) {
+            showError('Ошибка загрузки продуктов: ' + err.message);
+        }
+    }
+
+    function renderProducts() {
+        const tbody = document.querySelector('#productsTable tbody');
+        tbody.innerHTML = '';
+        for (const p of currentProducts) {
+            const row = tbody.insertRow();
+            row.insertCell(0).innerText = p.name;
+            row.insertCell(1).innerText = p.calories;
+            row.insertCell(2).innerText = p.proteins;
+            row.insertCell(3).innerText = p.fats;
+            row.insertCell(4).innerText = p.carbohydrates;
+            row.insertCell(5).innerText = p.category;
+            row.insertCell(6).innerText = p.flags;
+            
+            const actions = row.insertCell(7);
+            
+            const addPhotoBtn = document.createElement('button');
+                addPhotoBtn.innerText = '📷';
+                addPhotoBtn.title = 'Добавить фото';
+                addPhotoBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    addProductPhoto(p.id);
+                };
+
+            const viewBtn = document.createElement('button');
+            viewBtn.innerText = 'Просмотр';
+            viewBtn.onclick = () => showProductDetails(p);
+            
+            const editBtn = document.createElement('button');
+            editBtn.innerText = 'Редактировать';
+            editBtn.onclick = () => editProduct(p);
+            
+            const delBtn = document.createElement('button');
+            delBtn.innerText = 'Удалить';
+            delBtn.onclick = () => deleteProduct(p.id);
+
+            actions.appendChild(addPhotoBtn);
+            actions.appendChild(viewBtn);
+            actions.appendChild(editBtn);
+            actions.appendChild(delBtn);
+        }
+    }
+
+    // async function showProductDetails(product) {
+    //     document.getElementById('productDetails').innerText = JSON.stringify(product, null, 2);
+    //     document.getElementById('productDetailsContainer').classList.remove('hidden');
+    // }
+
+    async function showProductDetails(product) {
+    const container = document.getElementById('productDetails');
+    container.innerHTML = ''; // очищаем
+
+    // Блок с фотографиями
+    if (product.photos && product.photos.length) {
+        const photosDiv = document.createElement('div');
+        photosDiv.style.marginBottom = '20px';
+        photosDiv.innerHTML = '<strong>Фотографии:</strong><br>';
+        product.photos.forEach(url => {
+            const img = document.createElement('img');
+            img.src = `http://localhost:5006${url}`;
+            img.style.maxWidth = '200px';
+            img.style.maxHeight = '200px';
+            img.style.margin = '10px';
+            img.style.border = '1px solid #ccc';
+            img.style.padding = '2px';
+            photosDiv.appendChild(img);
+        });
+        container.appendChild(photosDiv);
+    }
+
+    // JSON-представление
+    const pre = document.createElement('pre');
+    pre.innerText = JSON.stringify(product, null, 2);
+    container.appendChild(pre);
+
+    document.getElementById('productDetailsContainer').classList.remove('hidden');
+}
+
+    function editProduct(product) {
+        document.getElementById('productId').value = product.id;
+        document.getElementById('productName').value = product.name;
+        document.getElementById('productCalories').value = product.calories;
+        document.getElementById('productProteins').value = product.proteins;
+        document.getElementById('productFats').value = product.fats;
+        document.getElementById('productCarbohydrates').value = product.carbohydrates;
+        document.getElementById('productDescription').value = product.description || '';
+        document.getElementById('productCategory').value = product.category;
+        document.getElementById('productCooking').value = product.cookingRequirement;
+        // флаги: устанавливаем чекбоксы
+        const flags = product.flags || 0;
+        document.querySelectorAll('#productForm input[type="checkbox"]').forEach(cb => {
+            cb.checked = (flags & parseInt(cb.value)) !== 0;
+        });
+        document.getElementById('productFormTitle').innerText = 'Редактировать продукт';
+        document.getElementById('productFormContainer').classList.remove('hidden');
+    }
+
+    async function deleteProduct(id) {
+        if (!confirm('Удалить продукт?')) return;
+        try {
+            await apiRequest(`/products/${id}`, 'DELETE');
+            showSuccess('Продукт удалён');
+            loadProducts();
+        } catch (err) {
+            if (err.message.includes('используется')) {
+                showError('Невозможно удалить продукт: он используется в блюдах');
+            } else {
+                showError('Ошибка удаления: ' + err.message);
+            }
+        }
+    }
+
+    async function saveProduct(event) {
+        event.preventDefault();
+        const id = document.getElementById('productId').value;
+        const name = document.getElementById('productName').value;
+        const calories = parseFloat(document.getElementById('productCalories').value);
+        const proteins = parseFloat(document.getElementById('productProteins').value);
+        const fats = parseFloat(document.getElementById('productFats').value);
+        const carbohydrates = parseFloat(document.getElementById('productCarbohydrates').value);
+        const description = document.getElementById('productDescription').value || null;
+        const category = parseInt(document.getElementById('productCategory').value);
+        const cookingRequirement = parseInt(document.getElementById('productCooking').value);
+        let flags = 0;
+        document.querySelectorAll('#productForm input[type="checkbox"]:checked').forEach(cb => {
+            flags |= parseInt(cb.value);
+        });
+        const productData = { name, calories, proteins, fats, carbohydrates, description, category, cookingRequirement, flags };
+
+        try {
+            if (id) {
+                await apiRequest(`/products/${id}`, 'PUT', productData);
+                showSuccess('Продукт обновлён');
+            } else {
+                await apiRequest('/products', 'POST', productData);
+                showSuccess('Продукт создан');
+            }
+            closeProductForm();
+            loadProducts();
+        } catch (err) {
+            showError('Ошибка сохранения: ' + err.message);
+        }
+    }
+
+    function closeProductForm() {
+        document.getElementById('productFormContainer').classList.add('hidden');
+        document.getElementById('productForm').reset();
+        document.getElementById('productId').value = '';
+    }
+
+    // --- Блюда ---
+    async function loadDishes() {
+        const search = document.getElementById('dishSearch').value;
+        const category = document.getElementById('dishCategoryFilter').value;
+        const flags = document.getElementById('dishFlagsFilter').value;
+        const sortBy = document.getElementById('dishSortBy').value;
+        const sortDesc = document.getElementById('dishSortDesc').checked;
+
+        let url = `/dishes?sortBy=${sortBy}&sortDesc=${sortDesc}`;
+        if (search) url += `&search=${encodeURIComponent(search)}`;
+        if (category) url += `&category=${category}`;
+        if (flags) url += `&flags=${flags}`;
+
+        try {
+            currentDishes = await apiRequest(url, 'GET');
+            renderDishes();
+        } catch (err) {
+            showError('Ошибка загрузки блюд: ' + err.message);
+        }
+    }
+
+    function renderDishes() {
+        const tbody = document.querySelector('#dishesTable tbody');
+        tbody.innerHTML = '';
+        for (const d of currentDishes) {
+            const row = tbody.insertRow();
+            row.insertCell(0).innerText = d.name;
+            row.insertCell(1).innerText = d.calories;
+            row.insertCell(2).innerText = d.proteins;
+            row.insertCell(3).innerText = d.fats;
+            row.insertCell(4).innerText = d.carbohydrates;
+            row.insertCell(5).innerText = d.portionSize;
+            row.insertCell(6).innerText = d.category;
+            row.insertCell(7).innerText = d.flags;
+            const actions = row.insertCell(8);
+            const viewBtn = document.createElement('button');
+            viewBtn.innerText = 'Просмотр';
+            viewBtn.onclick = () => showDishDetails(d);
+            const editBtn = document.createElement('button');
+            editBtn.innerText = 'Редактировать';
+            editBtn.onclick = () => editDish(d);
+            const delBtn = document.createElement('button');
+            delBtn.innerText = 'Удалить';
+            delBtn.onclick = () => deleteDish(d.id);
+            actions.appendChild(viewBtn);
+            actions.appendChild(editBtn);
+            actions.appendChild(delBtn);
+        }
+    }
+
+    async function showDishDetails(dish) {
+        // загружаем полный объект блюда (чтобы увидеть ингредиенты)
+        try {
+            const fullDish = await apiRequest(`/dishes/${dish.id}`, 'GET');
+            document.getElementById('dishDetails').innerText = JSON.stringify(fullDish, null, 2);
+            document.getElementById('dishDetailsContainer').classList.remove('hidden');
+        } catch (err) {
+            showError('Ошибка загрузки деталей: ' + err.message);
+        }
+    }
+
+    async function deleteDish(id) {
+        if (!confirm('Удалить блюдо?')) return;
+        try {
+            await apiRequest(`/dishes/${id}`, 'DELETE');
+            showSuccess('Блюдо удалено');
+            loadDishes();
+        } catch (err) {
+            showError('Ошибка удаления: ' + err.message);
+        }
+    }
+
+    // для формы блюда: управление ингредиентами и фото
+    let currentIngredients = [];
+    let currentPhotos = [];
+
+    async function loadProductsForSelect() {
+        const products = await apiRequest('/products', 'GET');
+        const select = document.getElementById('ingredientProductSelect');
+        select.innerHTML = '';
+        for (const p of products) {
+            const option = document.createElement('option');
+            option.value = p.id;
+            option.textContent = `${p.name} (${p.calories} ккал/100г)`;
+            select.appendChild(option);
+        }
+    }
+
+    function addIngredient() {
+        const productId = document.getElementById('ingredientProductSelect').value;
+        const amount = parseFloat(document.getElementById('ingredientAmount').value);
+        if (!productId || isNaN(amount) || amount <= 0) {
+            alert('Выберите продукт и введите положительное количество');
+            return;
+        }
+        currentIngredients.push({ productId, amount });
+        renderIngredientsList();
+        document.getElementById('ingredientAmount').value = '';
+    }
+
+    function removeIngredient(index) {
+        currentIngredients.splice(index, 1);
+        renderIngredientsList();
+    }
+
+    // function renderIngredientsList() {
+    //     const list = document.getElementById('ingredientsList');
+    //     list.innerHTML = '';
+    //     currentIngredients.forEach((ing, idx) => {
+    //         const li = document.createElement('li');
+    //         li.innerText = `Продукт ID: ${ing.productId}, кол-во: ${ing.amount} г`;
+    //         const removeBtn = document.createElement('button');
+    //         removeBtn.innerText = 'Удалить';
+    //         removeBtn.onclick = () => removeIngredient(idx);
+    //         li.appendChild(removeBtn);
+    //         list.appendChild(li);
+    //     });
+    // }
+
+    function addPhoto(url) {
+        if (!url) return;
+        currentPhotos.push(url);
+        renderPhotoList();
+    }
+
+    function removePhoto(index) {
+        currentPhotos.splice(index, 1);
+        renderPhotoList();
+    }
+
+    // function renderPhotoList() {
+    //     const container = document.getElementById('photoList');
+    //     container.innerHTML = '';
+    //     currentPhotos.forEach((url, idx) => {
+    //         const div = document.createElement('div');
+    //         div.innerText = url;
+    //         const removeBtn = document.createElement('button');
+    //         removeBtn.innerText = 'Удалить';
+    //         removeBtn.onclick = () => removePhoto(idx);
+    //         div.appendChild(removeBtn);
+    //         container.appendChild(div);
+    //     });
+    // }
+
+    function renderPhotoList() {
+    const container = document.getElementById('photoList');
+    container.innerHTML = '';
+    currentPhotos.forEach((url, idx) => {
+        const div = document.createElement('div');
+        div.style.display = 'inline-block';
+        div.style.margin = '5px';
+        div.style.textAlign = 'center';
+
+        const img = document.createElement('img');
+        img.src = `http://localhost:5006${url}`; // полный URL к статическому файлу
+        img.style.maxWidth = '100px';
+        img.style.maxHeight = '100px';
+        img.style.display = 'block';
+        img.style.marginBottom = '5px';
+
+        const removeBtn = document.createElement('button');
+        removeBtn.innerText = 'Удалить';
+        removeBtn.type = 'button';
+        removeBtn.onclick = (e) => {
+            e.preventDefault();
+            removePhoto(idx);
+        };
+
+        div.appendChild(img);
+        div.appendChild(removeBtn);
+        container.appendChild(div);
+    });
+}
+
+function renderIngredientsList() {
+    const list = document.getElementById('ingredientsList');
+    list.innerHTML = '';
+    currentIngredients.forEach((ing, idx) => {
+        const li = document.createElement('li');
+        li.innerText = `Продукт ID: ${ing.productId}, кол-во: ${ing.amount} г`;
+        const removeBtn = document.createElement('button');
+        removeBtn.innerText = 'Удалить';
+        removeBtn.type = 'button';
+        removeBtn.onclick = (e) => {
+            e.preventDefault();
+            removeIngredient(idx);
+        };
+        li.appendChild(removeBtn);
+        list.appendChild(li);
+    });
+}
+
+    async function uploadDishImage(file) {
+        const formData = new FormData();
+        formData.append('file', file);
+        const response = await fetch(`${API_BASE}/uploads/dish`, {
+            method: 'POST',
+            body: formData
+        });
+        if (!response.ok) {
+            const err = await response.text();
+            throw new Error(err);
+        }
+        const data = await response.json();
+        return data.url;
+    }
+
+    async function editDish(dish) {
+        // заполняем форму
+        document.getElementById('dishId').value = dish.id;
+        document.getElementById('dishName').value = dish.name;
+        document.getElementById('dishPortionSize').value = dish.portionSize;
+        document.getElementById('dishCategory').value = dish.category;
+        currentPhotos = dish.photos || [];
+        renderPhotoList();
+        // ингредиенты
+        currentIngredients = dish.ingredients.map(i => ({ productId: i.productId, amount: i.amount }));
+        renderIngredientsList();
+        // КБЖУ
+        if (dish.calories) document.getElementById('dishCalories').value = dish.calories;
+        if (dish.proteins) document.getElementById('dishProteins').value = dish.proteins;
+        if (dish.fats) document.getElementById('dishFats').value = dish.fats;
+        if (dish.carbohydrates) document.getElementById('dishCarbohydrates').value = dish.carbohydrates;
+        // флаги
+        const flags = dish.flags || 0;
+        document.querySelectorAll('#dishForm input[type="checkbox"]').forEach(cb => {
+            cb.checked = (flags & parseInt(cb.value)) !== 0;
+        });
+        document.getElementById('dishFormTitle').innerText = 'Редактировать блюдо';
+        document.getElementById('dishFormContainer').classList.remove('hidden');
+    }
+
+    async function saveDish(event) {
+        event.preventDefault();
+        const id = document.getElementById('dishId').value;
+        const name = document.getElementById('dishName').value;
+        const portionSize = parseFloat(document.getElementById('dishPortionSize').value);
+        const categoryRaw = document.getElementById('dishCategory').value;
+        const category = categoryRaw ? parseInt(categoryRaw) : null;
+        const ingredients = currentIngredients;
+        const photos = currentPhotos;
+        let calories, proteins, fats, carbohydrates;
+        if (document.getElementById('dishCalories').value) calories = parseFloat(document.getElementById('dishCalories').value);
+        if (document.getElementById('dishProteins').value) proteins = parseFloat(document.getElementById('dishProteins').value);
+        if (document.getElementById('dishFats').value) fats = parseFloat(document.getElementById('dishFats').value);
+        if (document.getElementById('dishCarbohydrates').value) carbohydrates = parseFloat(document.getElementById('dishCarbohydrates').value);
+        let flags = 0;
+        document.querySelectorAll('#dishForm input[type="checkbox"]:checked').forEach(cb => {
+            flags |= parseInt(cb.value);
+        });
+        const dishData = { name, portionSize, category, ingredients, photos, calories, proteins, fats, carbohydrates, flags };
+
+        try {
+            if (id) {
+                await apiRequest(`/dishes/${id}`, 'PUT', dishData);
+                showSuccess('Блюдо обновлено');
+            } else {
+                await apiRequest('/dishes', 'POST', dishData);
+                showSuccess('Блюдо создано');
+            }
+            closeDishForm();
+            loadDishes();
+        } catch (err) {
+            showError('Ошибка сохранения блюда: ' + err.message);
+        }
+    }
+
+    function closeDishForm() {
+        document.getElementById('dishFormContainer').classList.add('hidden');
+        document.getElementById('dishForm').reset();
+        document.getElementById('dishId').value = '';
+        currentIngredients = [];
+        currentPhotos = [];
+        renderIngredientsList();
+        renderPhotoList();
+    }
+
+    // --- Инициализация и события ---
+    function switchTab(tab) {
+        if (tab === 'products') {
+            document.getElementById('productsSection').classList.remove('hidden');
+            document.getElementById('dishesSection').classList.add('hidden');
+            loadProducts();
+        } else {
+            document.getElementById('productsSection').classList.add('hidden');
+            document.getElementById('dishesSection').classList.remove('hidden');
+            loadDishes();
+        }
+    }
+
+    document.getElementById('tabProductsBtn').onclick = () => switchTab('products');
+    document.getElementById('tabDishesBtn').onclick = () => switchTab('dishes');
+
+    document.getElementById('applyProductFilters').onclick = loadProducts;
+    document.getElementById('resetProductFilters').onclick = () => {
+        document.getElementById('productSearch').value = '';
+        document.getElementById('productCategoryFilter').value = '';
+        document.getElementById('productCookingFilter').value = '';
+        document.getElementById('productFlagsFilter').value = '';
+        document.getElementById('productSortBy').value = 'name';
+        loadProducts();
+    };
+    document.getElementById('newProductBtn').onclick = () => {
+        document.getElementById('productId').value = '';
+        document.getElementById('productForm').reset();
+        document.getElementById('productFormTitle').innerText = 'Создать продукт';
+        document.getElementById('productFormContainer').classList.remove('hidden');
+    };
+    document.getElementById('cancelProductForm').onclick = closeProductForm;
+    document.getElementById('productForm').onsubmit = saveProduct;
+    document.getElementById('closeProductDetails').onclick = () => document.getElementById('productDetailsContainer').classList.add('hidden');
+
+    document.getElementById('applyDishFilters').onclick = loadDishes;
+    document.getElementById('resetDishFilters').onclick = () => {
+        document.getElementById('dishSearch').value = '';
+        document.getElementById('dishCategoryFilter').value = '';
+        document.getElementById('dishFlagsFilter').value = '';
+        document.getElementById('dishSortBy').value = 'name';
+        document.getElementById('dishSortDesc').checked = false;
+        loadDishes();
+    };
+    document.getElementById('newDishBtn').onclick = async () => {
+        await loadProductsForSelect();
+        document.getElementById('dishId').value = '';
+        document.getElementById('dishForm').reset();
+        document.getElementById('dishFormTitle').innerText = 'Создать блюдо';
+        currentIngredients = [];
+        currentPhotos = [];
+        renderIngredientsList();
+        renderPhotoList();
+        document.getElementById('dishFormContainer').classList.remove('hidden');
+    };
+    document.getElementById('cancelDishForm').onclick = closeDishForm;
+    document.getElementById('dishForm').onsubmit = saveDish;
+    // document.getElementById('addIngredientBtn').onclick = addIngredient;
+    document.getElementById('addIngredientBtn').onclick = (e) => {
+        e.preventDefault();
+        const productId = document.getElementById('ingredientProductSelect').value;
+        const amount = parseFloat(document.getElementById('ingredientAmount').value);
+        if (!productId || isNaN(amount) || amount <= 0) {
+            alert('Выберите продукт и введите положительное количество');
+            return;
+        }
+        currentIngredients.push({ productId, amount });
+        renderIngredientsList();
+        document.getElementById('ingredientAmount').value = '';
+    };
+    document.getElementById('addPhotoBtn').onclick = () => {
+        const url = document.getElementById('dishPhotoUrl').value.trim();
+        if (url) addPhoto(url);
+        document.getElementById('dishPhotoUrl').value = '';
+    };
+    // document.getElementById('uploadImageBtn').onclick = async () => {
+    //     const fileInput = document.getElementById('dishImageFile');
+    //     const file = fileInput.files[0];
+    //     if (!file) {
+    //         alert('Выберите файл');
+    //         return;
+    //     }
+    //     try {
+    //         const url = await uploadDishImage(file);
+    //         addPhoto(url);
+    //         fileInput.value = '';
+    //     } catch (err) {
+    //         showError('Ошибка загрузки: ' + err.message);
+    //     }
+    // };
+    document.getElementById('uploadImageBtn').onclick = async (event) => {
+        event.preventDefault(); // ← обязательно
+        const fileInput = document.getElementById('dishImageFile');
+        const file = fileInput.files[0];
+        if (!file) {
+            alert('Выберите файл');
+            return;
+        }
+        try {
+            const url = await uploadDishImage(file);
+            addPhoto(url);
+            fileInput.value = '';
+        } catch (err) {
+            showError('Ошибка загрузки: ' + err.message);
+        }
+    };
+    document.getElementById('closeDishDetails').onclick = () => document.getElementById('dishDetailsContainer').classList.add('hidden');
+
+    // старт с продуктами
+    switchTab('products');
+
+    async function addProductPhoto(productId) {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+        try {
+            const formData = new FormData();
+            formData.append('file', file);
+            const response = await fetch(`${API_BASE}/uploads/dish`, {
+                method: 'POST',
+                body: formData
+            });
+            if (!response.ok) throw new Error(await response.text());
+            const data = await response.json();
+            const photoUrl = data.url;
+            
+            // Получаем текущий продукт
+            const product = currentProducts.find(p => p.id === productId);
+            if (!product) return;
+            
+            const updatedPhotos = product.photos ? [...product.photos, photoUrl] : [photoUrl];
+            await apiRequest(`/products/${productId}`, 'PUT', { ...product, photos: updatedPhotos });
+            showSuccess('Фото добавлено');
+            loadProducts(); // обновляем список
+        } catch (err) {
+            showError('Ошибка загрузки фото: ' + err.message);
+        }
+    };
+    input.click();
+}
+</script>
+</body>
+</html>

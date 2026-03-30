@@ -32,8 +32,8 @@ public class DishService : IDishService
     public async Task<Dish> CreateAsync(Dish dish, bool isCategoryExplicitlySet)
     {
         ProcessMacros(dish, isCategoryExplicitlySet);
-        await RecalculateDishPropertiesAsync(dish); // Считаем КБЖУ и Флаги
-        
+        ValidateNutrients(dish);
+        await RecalculateDishPropertiesAsync(dish);
         await _dishRepository.AddAsync(dish);
         return dish;
     }
@@ -41,15 +41,63 @@ public class DishService : IDishService
     public async Task UpdateAsync(Dish dish, bool isCategoryExplicitlySet)
     {
         ProcessMacros(dish, isCategoryExplicitlySet);
+        ValidateNutrients(dish);
         await RecalculateDishPropertiesAsync(dish);
         
         dish.UpdateModifiedDate();
         await _dishRepository.UpdateAsync(dish);
     }
+    
+    public async Task<IEnumerable<Dish>> GetAllAsync(
+        string? search,
+        DishCategory? category,
+        ProductFlags? flags,
+        string? sortBy,
+        bool sortDesc)
+    {
+        var dishes = await _dishRepository.GetAllAsync();
 
-    // --- БИЗНЕС-ЛОГИКА ---
+        // Поиск по подстроке (регистронезависимый)
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            dishes = dishes.Where(d => d.Name.Contains(search, StringComparison.OrdinalIgnoreCase));
+        }
 
-    // Требование 2.3: Обработка макросов
+        // Фильтр по категории
+        if (category.HasValue)
+        {
+            dishes = dishes.Where(d => d.Category == category.Value);
+        }
+
+        // Фильтр по флагам (если указан хотя бы один)
+        if (flags.HasValue && flags.Value != 0)
+        {
+            dishes = dishes.Where(d => (d.Flags & flags.Value) == flags.Value);
+        }
+
+        // Сортировка
+        dishes = sortBy?.ToLower() switch
+        {
+            "name" => sortDesc ? dishes.OrderByDescending(d => d.Name) : dishes.OrderBy(d => d.Name),
+            "calories" => sortDesc ? dishes.OrderByDescending(d => d.Calories) : dishes.OrderBy(d => d.Calories),
+            "proteins" => sortDesc ? dishes.OrderByDescending(d => d.Proteins) : dishes.OrderBy(d => d.Proteins),
+            "fats" => sortDesc ? dishes.OrderByDescending(d => d.Fats) : dishes.OrderBy(d => d.Fats),
+            "carbohydrates" => sortDesc ? dishes.OrderByDescending(d => d.Carbohydrates) : dishes.OrderBy(d => d.Carbohydrates),
+            _ => dishes.OrderBy(d => d.Name) // по умолчанию по имени
+        };
+
+        return dishes.ToList();
+    }
+    
+    public async Task DeleteAsync(Guid id)
+    {
+        var dish = await _dishRepository.GetByIdAsync(id);
+        if (dish == null)
+            throw new KeyNotFoundException($"Блюдо с id {id} не найдено.");
+
+        await _dishRepository.DeleteAsync(id);
+    }
+    
     private void ProcessMacros(Dish dish, bool isCategoryExplicitlySet)
     {
         foreach (var macro in _macrosMap)
@@ -78,7 +126,7 @@ public class DishService : IDishService
         var productIds = dish.Ingredients.Select(i => i.ProductId).Distinct();
         var products = (await _dishRepository.GetProductsByIdsAsync(productIds)).ToDictionary(p => p.Id);
 
-        double totalCalories = 0, totalProteins = 0, totalFats = 0, totalCarbs = 0;
+        double calcCal = 0, calcProt = 0, calcFat = 0, calcCarb = 0;
         
         // Изначально предполагаем, что у блюда есть все флаги. 
         // Побитовое "И" (Bitwise AND) оставит только те флаги, которые есть у ВСЕХ продуктов.
@@ -86,27 +134,36 @@ public class DishService : IDishService
 
         foreach (var ingredient in dish.Ingredients)
         {
-            if (products.TryGetValue(ingredient.ProductId, out var product))
+            if (products.TryGetValue(ingredient.ProductId, out var p))
             {
                 // Формула: (Значение на 100г * Количество в блюде) / 100
-                totalCalories += (product.Calories * ingredient.Amount) / 100;
-                totalProteins += (product.Proteins * ingredient.Amount) / 100;
-                totalFats += (product.Fats * ingredient.Amount) / 100;
-                totalCarbs += (product.Carbohydrates * ingredient.Amount) / 100;
-
-                // Убираем флаги, которых нет у текущего продукта
-                combinedFlags &= product.Flags; 
+                calcCal += (p.Calories * ingredient.Amount) / 100;
+                calcProt += (p.Proteins * ingredient.Amount) / 100;
+                calcFat += (p.Fats * ingredient.Amount) / 100;
+                calcCarb += (p.Carbohydrates * ingredient.Amount) / 100;
+                combinedFlags &= p.Flags;
             }
         }
 
-        // Записываем черновые значения КБЖУ (если пользователь не передал свои ручные значения)
-        // В реальном API вы, скорее всего, будете проверять, передал ли пользователь эти поля
-        dish.Calories = totalCalories;
-        dish.Proteins = totalProteins;
-        dish.Fats = totalFats;
-        dish.Carbohydrates = totalCarbs;
+        if (dish.Calories == 0) dish.Calories = calcCal;
+        if (dish.Proteins == 0) dish.Proteins = calcProt;
+        if (dish.Fats == 0) dish.Fats = calcFat;
+        if (dish.Carbohydrates == 0) dish.Carbohydrates = calcCarb;
 
-        // Кастуем ProductFlags обратно в DishFlags (так как они идентичны по значениям)
         dish.Flags = (ProductFlags)combinedFlags; 
+    }
+    
+    private void ValidateNutrients(Dish dish)
+    {
+        // Проверка суммы БЖУ на порцию (приведенную к 100г веса порции)
+        double sumBjuPerPortion = (dish.Proteins + dish.Fats + dish.Carbohydrates);
+        double portionWeight = dish.PortionSize; // Предполагаем, что это вес в граммах
+
+        if (portionWeight > 0)
+        {
+            double bjuPer100g = (sumBjuPerPortion / portionWeight) * 100;
+            if (bjuPer100g > 100.001) // Небольшой допуск на точность float
+                throw new ArgumentException("Сумма БЖУ на 100 грамм блюда не может превышать 100.");
+        }
     }
 }

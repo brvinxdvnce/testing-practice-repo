@@ -7,6 +7,7 @@ public record DishCreateDto(
     double PortionSize, 
     DishCategory? Category,
     List<IngredientDto> Ingredients,
+    ProductFlags? Flags,
     double? Calories,
     double? Proteins,
     double? Fats,

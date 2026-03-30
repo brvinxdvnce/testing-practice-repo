@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "PsDWHr3t2zI=",
+  "dgSpecHash": "GE5veopBnJg=",
   "success": true,
-  "projectFilePath": "C:\\Users\\danil\\Desktop\\Testing-Practice\\Testing-Practice.Presentation\\Testing-Practice.Presentation.csproj",
+  "projectFilePath": "C:\\Users\\danil\\Desktop\\testing-practice-repo\\backend\\Testing-Practice\\Testing-Practice.Presentation\\Testing-Practice.Presentation.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\danil\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\danil\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.5\\microsoft.aspnetcore.openapi.10.0.5.nupkg.sha512",

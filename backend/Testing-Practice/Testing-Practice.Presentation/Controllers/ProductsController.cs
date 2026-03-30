@@ -22,6 +22,36 @@ public class ProductsController : ControllerBase
         _productRepository = productRepository;
     }
 
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Product>> GetById(Guid id)
+    {
+        var product = await _productService.GetByIdAsync(id);
+        if (product == null) return NotFound();
+        return Ok(product);
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<Product>> Update(Guid id, ProductUpdateDto dto)
+    {
+        var existing = await _productService.GetByIdAsync(id);
+        if (existing == null) return NotFound();
+
+        // Обновляем только переданные поля
+        if (!string.IsNullOrWhiteSpace(dto.Name)) existing.Name = dto.Name;
+        if (dto.Calories.HasValue) existing.Calories = dto.Calories.Value;
+        if (dto.Proteins.HasValue) existing.Proteins = dto.Proteins.Value;
+        if (dto.Fats.HasValue) existing.Fats = dto.Fats.Value;
+        if (dto.Carbohydrates.HasValue) existing.Carbohydrates = dto.Carbohydrates.Value;
+        if (dto.Category.HasValue) existing.Category = dto.Category.Value;
+        if (!string.IsNullOrWhiteSpace(dto.Description)) existing.Description = dto.Description;
+        if (dto.CookingRequirement.HasValue) existing.CookingRequirement = dto.CookingRequirement.Value;
+        if (dto.Flags.HasValue) existing.Flags = dto.Flags.Value;
+        if (dto.Photos != null) existing.Photos = dto.Photos;
+
+        await _productService.UpdateAsync(existing);
+        return Ok(existing);
+    }
+    
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Product>>> GetAll(
         [FromQuery] string? search, [FromQuery] ProductCategory? category, 

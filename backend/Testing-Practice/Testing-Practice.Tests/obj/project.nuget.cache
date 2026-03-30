@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Gp4aT8OCCoY=",
+  "dgSpecHash": "O9gwnFFuaKk=",
   "success": true,
-  "projectFilePath": "C:\\Users\\danil\\Desktop\\Testing-Practice\\Testing-Practice.Tests\\Testing-Practice.Tests.csproj",
+  "projectFilePath": "C:\\Users\\danil\\Desktop\\testing-practice-repo\\backend\\Testing-Practice\\Testing-Practice.Tests\\Testing-Practice.Tests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\danil\\.nuget\\packages\\castle.core\\5.1.1\\castle.core.5.1.1.nupkg.sha512",
     "C:\\Users\\danil\\.nuget\\packages\\coverlet.collector\\6.0.4\\coverlet.collector.6.0.4.nupkg.sha512",

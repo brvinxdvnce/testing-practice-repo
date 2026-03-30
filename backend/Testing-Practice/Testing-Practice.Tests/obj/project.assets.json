@@ -1081,11 +1081,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\danil\\Desktop\\Testing-Practice\\Testing-Practice.Tests\\Testing-Practice.Tests.csproj",
+      "projectUniqueName": "C:\\Users\\danil\\Desktop\\testing-practice-repo\\backend\\Testing-Practice\\Testing-Practice.Tests\\Testing-Practice.Tests.csproj",
       "projectName": "Testing-Practice.Tests",
-      "projectPath": "C:\\Users\\danil\\Desktop\\Testing-Practice\\Testing-Practice.Tests\\Testing-Practice.Tests.csproj",
+      "projectPath": "C:\\Users\\danil\\Desktop\\testing-practice-repo\\backend\\Testing-Practice\\Testing-Practice.Tests\\Testing-Practice.Tests.csproj",
       "packagesPath": "C:\\Users\\danil\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\danil\\Desktop\\Testing-Practice\\Testing-Practice.Tests\\obj\\",
+      "outputPath": "C:\\Users\\danil\\Desktop\\testing-practice-repo\\backend\\Testing-Practice\\Testing-Practice.Tests\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\danil\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -1102,11 +1102,11 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
-            "C:\\Users\\danil\\Desktop\\Testing-Practice\\Testing-Practice.Application\\Testing-Practice.Application.csproj": {
-              "projectPath": "C:\\Users\\danil\\Desktop\\Testing-Practice\\Testing-Practice.Application\\Testing-Practice.Application.csproj"
+            "C:\\Users\\danil\\Desktop\\testing-practice-repo\\backend\\Testing-Practice\\Testing-Practice.Application\\Testing-Practice.Application.csproj": {
+              "projectPath": "C:\\Users\\danil\\Desktop\\testing-practice-repo\\backend\\Testing-Practice\\Testing-Practice.Application\\Testing-Practice.Application.csproj"
             },
-            "C:\\Users\\danil\\Desktop\\Testing-Practice\\Testing-Practice.Domain\\Testing-Practice.Domain.csproj": {
-              "projectPath": "C:\\Users\\danil\\Desktop\\Testing-Practice\\Testing-Practice.Domain\\Testing-Practice.Domain.csproj"
+            "C:\\Users\\danil\\Desktop\\testing-practice-repo\\backend\\Testing-Practice\\Testing-Practice.Domain\\Testing-Practice.Domain.csproj": {
+              "projectPath": "C:\\Users\\danil\\Desktop\\testing-practice-repo\\backend\\Testing-Practice\\Testing-Practice.Domain\\Testing-Practice.Domain.csproj"
             }
           }
         }
