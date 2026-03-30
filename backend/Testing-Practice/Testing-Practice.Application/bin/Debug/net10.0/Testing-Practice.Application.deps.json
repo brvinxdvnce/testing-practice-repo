@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "Testing-Practice.Application/1.0.0": {
+        "dependencies": {
+          "Testing-Practice.Domain": "1.0.0"
+        },
+        "runtime": {
+          "Testing-Practice.Application.dll": {}
+        }
+      },
+      "Testing-Practice.Domain/1.0.0": {
+        "runtime": {
+          "Testing-Practice.Domain.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Testing-Practice.Application/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Testing-Practice.Domain/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

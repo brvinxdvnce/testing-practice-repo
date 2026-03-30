@@ -1,0 +1,17 @@
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Infrastructure\bin\Debug\net10.0\Testing-Practice.Infrastructure.deps.json
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Infrastructure\bin\Debug\net10.0\Testing-Practice.Infrastructure.runtimeconfig.json
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Infrastructure\bin\Debug\net10.0\Testing-Practice.Infrastructure.dll
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Infrastructure\bin\Debug\net10.0\Testing-Practice.Infrastructure.pdb
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Infrastructure\bin\Debug\net10.0\Testing-Practice.Domain.dll
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Infrastructure\bin\Debug\net10.0\Testing-Practice.Domain.pdb
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Infrastructure\obj\Debug\net10.0\Testing-Practice.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Infrastructure\obj\Debug\net10.0\Testing-Practice.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Infrastructure\obj\Debug\net10.0\Testing-Practice.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Infrastructure\obj\Debug\net10.0\Testing-Practice.Infrastructure.AssemblyInfo.cs
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Infrastructure\obj\Debug\net10.0\Testing-Practice.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Infrastructure\obj\Debug\net10.0\Testing-.6C93E590.Up2Date
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Infrastructure\obj\Debug\net10.0\Testing-Practice.Infrastructure.dll
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Infrastructure\obj\Debug\net10.0\refint\Testing-Practice.Infrastructure.dll
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Infrastructure\obj\Debug\net10.0\Testing-Practice.Infrastructure.pdb
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Infrastructure\obj\Debug\net10.0\Testing-Practice.Infrastructure.genruntimeconfig.cache
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Infrastructure\obj\Debug\net10.0\ref\Testing-Practice.Infrastructure.dll

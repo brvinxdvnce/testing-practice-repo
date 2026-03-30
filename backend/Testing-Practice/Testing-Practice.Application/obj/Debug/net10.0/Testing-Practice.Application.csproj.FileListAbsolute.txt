@@ -1,0 +1,15 @@
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Application\bin\Debug\net10.0\Testing-Practice.Application.deps.json
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Application\bin\Debug\net10.0\Testing-Practice.Application.dll
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Application\bin\Debug\net10.0\Testing-Practice.Application.pdb
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Application\bin\Debug\net10.0\Testing-Practice.Domain.dll
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Application\bin\Debug\net10.0\Testing-Practice.Domain.pdb
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Application\obj\Debug\net10.0\Testing-Practice.Application.csproj.AssemblyReference.cache
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Application\obj\Debug\net10.0\Testing-Practice.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Application\obj\Debug\net10.0\Testing-Practice.Application.AssemblyInfoInputs.cache
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Application\obj\Debug\net10.0\Testing-Practice.Application.AssemblyInfo.cs
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Application\obj\Debug\net10.0\Testing-Practice.Application.csproj.CoreCompileInputs.cache
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Application\obj\Debug\net10.0\Testing-.A5E176EF.Up2Date
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Application\obj\Debug\net10.0\Testing-Practice.Application.dll
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Application\obj\Debug\net10.0\refint\Testing-Practice.Application.dll
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Application\obj\Debug\net10.0\Testing-Practice.Application.pdb
+C:\Users\danil\Desktop\Testing-Practice\Testing-Practice.Application\obj\Debug\net10.0\ref\Testing-Practice.Application.dll
