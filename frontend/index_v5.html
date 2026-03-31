@@ -388,6 +388,8 @@
     const container = document.getElementById('productDetails');
     container.innerHTML = ''; // очищаем
 
+     const { photos, ...productWithoutPhotos } = product;
+
     // Блок с фотографиями
     // if (product.photos && product.photos.length) {
     //     const photosDiv = document.createElement('div');
@@ -408,7 +410,7 @@
 
     // JSON-представление
     const pre = document.createElement('pre');
-    pre.innerText = JSON.stringify(product, null, 2);
+    pre.innerText = JSON.stringify(productWithoutPhotos, null, 2);
     container.appendChild(pre);
 
     document.getElementById('productDetailsContainer').classList.remove('hidden');
@@ -664,42 +666,51 @@
         }
         
         // Блок с фотографиями продуктов-ингредиентов
-        if (fullDish.ingredients && fullDish.ingredients.length > 0) {
-            const ingredientsTitle = document.createElement('h4');
-            ingredientsTitle.textContent = 'Ингредиенты с фотографиями:';
-            ingredientsTitle.style.marginTop = '20px';
-            container.appendChild(ingredientsTitle);
+        //if (fullDish.ingredients && fullDish.ingredients.length > 0) {
+          //  const ingredientsTitle = document.createElement('h4');
+            // ingredientsTitle.textContent = 'Ингредиенты с фотографиями:';
+            // ingredientsTitle.style.marginTop = '20px';
+            // container.appendChild(ingredientsTitle);
             
+        //     fullDish.ingredients.forEach(ingredient => {
+        //         if (ingredient.product && ingredient.product.photos && ingredient.product.photos.length > 0) {
+        //             const productDiv = document.createElement('div');
+        //             productDiv.style.marginBottom = '20px';
+        //             productDiv.style.border = '1px solid #ddd';
+        //             productDiv.style.padding = '10px';
+        //             productDiv.style.borderRadius = '5px';
+                    
+        //             const productName = document.createElement('strong');
+        //             productName.textContent = `${ingredient.product.name} (${ingredient.amount}г):`;
+        //             productDiv.appendChild(productName);
+        //             productDiv.appendChild(document.createElement('br'));
+                    
+        //             ingredient.product.photos.forEach(url => {
+        //                 const img = document.createElement('img');
+        //                 img.src = `http://localhost:5006${url}`;
+        //                 img.style.maxWidth = '150px';
+        //                 img.style.maxHeight = '150px';
+        //                 img.style.margin = '5px';
+        //                 img.style.border = '1px solid #ccc';
+        //                 img.style.padding = '2px';
+        //                 productDiv.appendChild(img);
+        //             });
+                    
+        //             container.appendChild(productDiv);
+        //         }
+        //     });
+        //}
+
+        // JSON-представление
+        
+         if (fullDish.ingredients && fullDish.ingredients.length > 0) {
             fullDish.ingredients.forEach(ingredient => {
-                if (ingredient.product && ingredient.product.photos && ingredient.product.photos.length > 0) {
-                    const productDiv = document.createElement('div');
-                    productDiv.style.marginBottom = '20px';
-                    productDiv.style.border = '1px solid #ddd';
-                    productDiv.style.padding = '10px';
-                    productDiv.style.borderRadius = '5px';
-                    
-                    const productName = document.createElement('strong');
-                    productName.textContent = `${ingredient.product.name} (${ingredient.amount}г):`;
-                    productDiv.appendChild(productName);
-                    productDiv.appendChild(document.createElement('br'));
-                    
-                    ingredient.product.photos.forEach(url => {
-                        const img = document.createElement('img');
-                        img.src = `http://localhost:5006${url}`;
-                        img.style.maxWidth = '150px';
-                        img.style.maxHeight = '150px';
-                        img.style.margin = '5px';
-                        img.style.border = '1px solid #ccc';
-                        img.style.padding = '2px';
-                        productDiv.appendChild(img);
-                    });
-                    
-                    container.appendChild(productDiv);
+                if (ingredient.product && ingredient.product.photos) {
+                    delete ingredient.product.photos;
                 }
             });
         }
-
-        // JSON-представление
+        
         const pre = document.createElement('pre');
         pre.innerText = JSON.stringify(fullDish, null, 2);
         container.appendChild(pre);
@@ -1037,38 +1048,38 @@ function renderIngredientsList() {
     // старт с продуктами
     switchTab('products');
 
-    async function addProductPhoto(productId) {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = 'image/*';
-    input.onchange = async (event) => {
-        const file = event.target.files[0];
-        if (!file) return;
-        try {
-            const formData = new FormData();
-            formData.append('file', file);
-            const response = await fetch(`${API_BASE}/uploads/dish`, {
-                method: 'POST',
-                body: formData
-            });
-            if (!response.ok) throw new Error(await response.text());
-            const data = await response.json();
-            const photoUrl = data.url;
+//     async function addProductPhoto(productId) {
+//     const input = document.createElement('input');
+//     input.type = 'file';
+//     input.accept = 'image/*';
+//     input.onchange = async (event) => {
+//         const file = event.target.files[0];
+//         if (!file) return;
+//         try {
+//             const formData = new FormData();
+//             formData.append('file', file);
+//             const response = await fetch(`${API_BASE}/uploads/dish`, {
+//                 method: 'POST',
+//                 body: formData
+//             });
+//             if (!response.ok) throw new Error(await response.text());
+//             const data = await response.json();
+//             const photoUrl = data.url;
             
-            // Получаем текущий продукт
-            const product = currentProducts.find(p => p.id === productId);
-            if (!product) return;
+//             // Получаем текущий продукт
+//             const product = currentProducts.find(p => p.id === productId);
+//             if (!product) return;
             
-            const updatedPhotos = product.photos ? [...product.photos, photoUrl] : [photoUrl];
-            await apiRequest(`/products/${productId}`, 'PUT', { ...product, photos: updatedPhotos });
-            showSuccess('Фото добавлено');
-            loadProducts(); // обновляем список
-        } catch (err) {
-            showError('Ошибка загрузки фото: ' + err.message);
-        }
-    };
-    input.click();
-}
+//             const updatedPhotos = product.photos ? [...product.photos, photoUrl] : [photoUrl];
+//             await apiRequest(`/products/${productId}`, 'PUT', { ...product, photos: updatedPhotos });
+//             showSuccess('Фото добавлено');
+//             loadProducts(); // обновляем список
+//         } catch (err) {
+//             showError('Ошибка загрузки фото: ' + err.message);
+//         }
+//     };
+//     input.click();
+// }
 
     async function addDishPhoto(dishId) {
     const input = document.createElement('input');
