@@ -207,6 +207,7 @@
             <div><label>Размер порции (г): <input type="number" id="dishPortionSize" step="any" min="0.01" required></label></div>
             <div><label>Категория:
                 <select id="dishCategory">
+                    <option value="" selected disabled>-- Выберите категорию --</option>
                     <option value="0">Десерт</option>
                     <option value="1">Первое</option>
                     <option value="2">Второе</option>
@@ -304,46 +305,88 @@
     }
 
     function renderProducts() {
-        const tbody = document.querySelector('#productsTable tbody');
-        tbody.innerHTML = '';
-        for (const p of currentProducts) {
-            const row = tbody.insertRow();
-            row.insertCell(0).innerText = p.name;
-            row.insertCell(1).innerText = p.calories;
-            row.insertCell(2).innerText = p.proteins;
-            row.insertCell(3).innerText = p.fats;
-            row.insertCell(4).innerText = p.carbohydrates;
-            row.insertCell(5).innerText = p.category;
-            row.insertCell(6).innerText = p.flags;
-            
-            const actions = row.insertCell(7);
-            
-            const addPhotoBtn = document.createElement('button');
-                addPhotoBtn.innerText = '📷';
-                addPhotoBtn.title = 'Добавить фото';
-                addPhotoBtn.onclick = (e) => {
-                    e.stopPropagation();
-                    addProductPhoto(p.id);
-                };
+    const tbody = document.querySelector('#productsTable tbody');
+    tbody.innerHTML = '';
+    for (const p of currentProducts) {
+        const row = tbody.insertRow();
+        row.insertCell(0).innerText = p.name;
+        row.insertCell(1).innerText = p.calories;
+        row.insertCell(2).innerText = p.proteins;
+        row.insertCell(3).innerText = p.fats;
+        row.insertCell(4).innerText = p.carbohydrates;
+        row.insertCell(5).innerText = getProductCategoryName(p.category); // Исправлено
+        row.insertCell(6).innerText = getFlagsNames(p.flags); // Исправлено
+        
+        const actions = row.insertCell(7);
+        
+        const addPhotoBtn = document.createElement('button');
+        addPhotoBtn.innerText = '📷';
+        addPhotoBtn.title = 'Добавить фото';
+        addPhotoBtn.onclick = (e) => {
+            e.stopPropagation();
+            addProductPhoto(p.id);
+        };
 
-            const viewBtn = document.createElement('button');
-            viewBtn.innerText = 'Просмотр';
-            viewBtn.onclick = () => showProductDetails(p);
-            
-            const editBtn = document.createElement('button');
-            editBtn.innerText = 'Редактировать';
-            editBtn.onclick = () => editProduct(p);
-            
-            const delBtn = document.createElement('button');
-            delBtn.innerText = 'Удалить';
-            delBtn.onclick = () => deleteProduct(p.id);
+        const viewBtn = document.createElement('button');
+        viewBtn.innerText = 'Просмотр';
+        viewBtn.onclick = () => showProductDetails(p);
+        
+        const editBtn = document.createElement('button');
+        editBtn.innerText = 'Редактировать';
+        editBtn.onclick = () => editProduct(p);
+        
+        const delBtn = document.createElement('button');
+        delBtn.innerText = 'Удалить';
+        delBtn.onclick = () => deleteProduct(p.id);
 
-            actions.appendChild(addPhotoBtn);
-            actions.appendChild(viewBtn);
-            actions.appendChild(editBtn);
-            actions.appendChild(delBtn);
-        }
+        actions.appendChild(addPhotoBtn);
+        actions.appendChild(viewBtn);
+        actions.appendChild(editBtn);
+        actions.appendChild(delBtn);
     }
+}
+
+    // function renderProducts() {
+    //     const tbody = document.querySelector('#productsTable tbody');
+    //     tbody.innerHTML = '';
+    //     for (const p of currentProducts) {
+    //         const row = tbody.insertRow();
+    //         row.insertCell(0).innerText = p.name;
+    //         row.insertCell(1).innerText = p.calories;
+    //         row.insertCell(2).innerText = p.proteins;
+    //         row.insertCell(3).innerText = p.fats;
+    //         row.insertCell(4).innerText = p.carbohydrates;
+    //         row.insertCell(5).innerText = p.category;
+    //         row.insertCell(6).innerText = p.flags;
+            
+    //         const actions = row.insertCell(7);
+            
+    //         const addPhotoBtn = document.createElement('button');
+    //             addPhotoBtn.innerText = '📷';
+    //             addPhotoBtn.title = 'Добавить фото';
+    //             addPhotoBtn.onclick = (e) => {
+    //                 e.stopPropagation();
+    //                 addProductPhoto(p.id);
+    //             };
+
+    //         const viewBtn = document.createElement('button');
+    //         viewBtn.innerText = 'Просмотр';
+    //         viewBtn.onclick = () => showProductDetails(p);
+            
+    //         const editBtn = document.createElement('button');
+    //         editBtn.innerText = 'Редактировать';
+    //         editBtn.onclick = () => editProduct(p);
+            
+    //         const delBtn = document.createElement('button');
+    //         delBtn.innerText = 'Удалить';
+    //         delBtn.onclick = () => deleteProduct(p.id);
+
+    //         actions.appendChild(addPhotoBtn);
+    //         actions.appendChild(viewBtn);
+    //         actions.appendChild(editBtn);
+    //         actions.appendChild(delBtn);
+    //     }
+    // }
 
     // async function showProductDetails(product) {
     //     document.getElementById('productDetails').innerText = JSON.stringify(product, null, 2);
@@ -513,8 +556,8 @@
         row.insertCell(3).innerText = d.fats;
         row.insertCell(4).innerText = d.carbohydrates;
         row.insertCell(5).innerText = d.portionSize;
-        row.insertCell(6).innerText = d.category;
-        row.insertCell(7).innerText = d.flags;
+        row.insertCell(6).innerText = getDishCategoryName(d.category); // Исправлено
+        row.insertCell(7).innerText = getFlagsNames(d.flags); // Исправлено
         const actions = row.insertCell(8);
         
         // Кнопка добавления фото
@@ -544,6 +587,49 @@
         actions.appendChild(delBtn);
     }
 }
+
+//     function renderDishes() {
+//     const tbody = document.querySelector('#dishesTable tbody');
+//     tbody.innerHTML = '';
+//     for (const d of currentDishes) {
+//         const row = tbody.insertRow();
+//         row.insertCell(0).innerText = d.name;
+//         row.insertCell(1).innerText = d.calories;
+//         row.insertCell(2).innerText = d.proteins;
+//         row.insertCell(3).innerText = d.fats;
+//         row.insertCell(4).innerText = d.carbohydrates;
+//         row.insertCell(5).innerText = d.portionSize;
+//         row.insertCell(6).innerText = d.category;
+//         row.insertCell(7).innerText = d.flags;
+//         const actions = row.insertCell(8);
+        
+//         // Кнопка добавления фото
+//         const addPhotoBtn = document.createElement('button');
+//         addPhotoBtn.innerText = '📷';
+//         addPhotoBtn.title = 'Добавить фото';
+//         addPhotoBtn.onclick = (e) => {
+//             e.stopPropagation();
+//             addDishPhoto(d.id);
+//         };
+        
+//         const viewBtn = document.createElement('button');
+//         viewBtn.innerText = 'Просмотр';
+//         viewBtn.onclick = () => showDishDetails(d);
+        
+//         const editBtn = document.createElement('button');
+//         editBtn.innerText = 'Редактировать';
+//         editBtn.onclick = () => editDish(d);
+        
+//         const delBtn = document.createElement('button');
+//         delBtn.innerText = 'Удалить';
+//         delBtn.onclick = () => deleteDish(d.id);
+        
+//         actions.appendChild(addPhotoBtn);
+//         actions.appendChild(viewBtn);
+//         actions.appendChild(editBtn);
+//         actions.appendChild(delBtn);
+//     }
+// }
 
     // async function showDishDetails(dish) {
     //     // загружаем полный объект блюда (чтобы увидеть ингредиенты)
@@ -1025,6 +1111,52 @@ function renderIngredientsList() {
     };
     input.click();
 }
+
+function getProductCategoryName(categoryValue) {
+    const categories = {
+        0: 'Замороженный',
+        1: 'Мясной',
+        2: 'Овощи',
+        3: 'Зелень',
+        4: 'Специи',
+        5: 'Крупы',
+        6: 'Консервы',
+        7: 'Жидкость',
+        8: 'Сладости'
+    };
+    return categories[categoryValue] || categoryValue;
+}
+
+function getDishCategoryName(categoryValue) {
+    const categories = {
+        0: 'Десерт',
+        1: 'Первое',
+        2: 'Второе',
+        3: 'Напиток',
+        4: 'Салат',
+        5: 'Суп',
+        6: 'Перекус'
+    };
+    return categories[categoryValue] || categoryValue;
+}
+
+function getCookingRequirementName(value) {
+    const requirements = {
+        0: 'Готовый к употреблению',
+        1: 'Полуфабрикат',
+        2: 'Требует приготовления'
+    };
+    return requirements[value] || value;
+}
+
+function getFlagsNames(flagsValue) {
+    const flags = [];
+    if (flagsValue & 1) flags.push('Веган');
+    if (flagsValue & 2) flags.push('Без глютена');
+    if (flagsValue & 4) flags.push('Без сахара');
+    return flags.length ? flags.join(', ') : 'Нет';
+}
+
 </script>
 </body>
 </html>
