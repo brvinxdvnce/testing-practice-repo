@@ -170,10 +170,30 @@
     </div>
 
     <!-- Список блюд -->
-    <div>
+    <!-- <div>
         <h3>Список блюд</h3>
         <table id="dishesTable">
             <thead><tr><th>Название</th><th>Калории</th><th>Белки</th><th>Жиры</th><th>Углеводы</th><th>Порция (г)</th><th>Категория</th><th>Флаги</th><th>Действия</th></tr></thead>
+            <tbody></tbody>
+        </table>
+    </div> -->
+
+    <div>
+        <h3>Список блюд</h3>
+        <table id="dishesTable">
+            <thead>
+                <tr>
+                    <th>Название</th>
+                    <th>Калории</th>
+                    <th>Белки</th>
+                    <th>Жиры</th>
+                    <th>Углеводы</th>
+                    <th>Порция (г)</th>
+                    <th>Категория</th>
+                    <th>Флаги</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
             <tbody></tbody>
         </table>
     </div>
@@ -453,34 +473,77 @@
         }
     }
 
+    // function renderDishes() {
+    //     const tbody = document.querySelector('#dishesTable tbody');
+    //     tbody.innerHTML = '';
+    //     for (const d of currentDishes) {
+    //         const row = tbody.insertRow();
+    //         row.insertCell(0).innerText = d.name;
+    //         row.insertCell(1).innerText = d.calories;
+    //         row.insertCell(2).innerText = d.proteins;
+    //         row.insertCell(3).innerText = d.fats;
+    //         row.insertCell(4).innerText = d.carbohydrates;
+    //         row.insertCell(5).innerText = d.portionSize;
+    //         row.insertCell(6).innerText = d.category;
+    //         row.insertCell(7).innerText = d.flags;
+    //         const actions = row.insertCell(8);
+    //         const viewBtn = document.createElement('button');
+    //         viewBtn.innerText = 'Просмотр';
+    //         viewBtn.onclick = () => showDishDetails(d);
+    //         const editBtn = document.createElement('button');
+    //         editBtn.innerText = 'Редактировать';
+    //         editBtn.onclick = () => editDish(d);
+    //         const delBtn = document.createElement('button');
+    //         delBtn.innerText = 'Удалить';
+    //         delBtn.onclick = () => deleteDish(d.id);
+    //         actions.appendChild(viewBtn);
+    //         actions.appendChild(editBtn);
+    //         actions.appendChild(delBtn);
+    //     }
+    // }
+
     function renderDishes() {
-        const tbody = document.querySelector('#dishesTable tbody');
-        tbody.innerHTML = '';
-        for (const d of currentDishes) {
-            const row = tbody.insertRow();
-            row.insertCell(0).innerText = d.name;
-            row.insertCell(1).innerText = d.calories;
-            row.insertCell(2).innerText = d.proteins;
-            row.insertCell(3).innerText = d.fats;
-            row.insertCell(4).innerText = d.carbohydrates;
-            row.insertCell(5).innerText = d.portionSize;
-            row.insertCell(6).innerText = d.category;
-            row.insertCell(7).innerText = d.flags;
-            const actions = row.insertCell(8);
-            const viewBtn = document.createElement('button');
-            viewBtn.innerText = 'Просмотр';
-            viewBtn.onclick = () => showDishDetails(d);
-            const editBtn = document.createElement('button');
-            editBtn.innerText = 'Редактировать';
-            editBtn.onclick = () => editDish(d);
-            const delBtn = document.createElement('button');
-            delBtn.innerText = 'Удалить';
-            delBtn.onclick = () => deleteDish(d.id);
-            actions.appendChild(viewBtn);
-            actions.appendChild(editBtn);
-            actions.appendChild(delBtn);
-        }
+    const tbody = document.querySelector('#dishesTable tbody');
+    tbody.innerHTML = '';
+    for (const d of currentDishes) {
+        const row = tbody.insertRow();
+        row.insertCell(0).innerText = d.name;
+        row.insertCell(1).innerText = d.calories;
+        row.insertCell(2).innerText = d.proteins;
+        row.insertCell(3).innerText = d.fats;
+        row.insertCell(4).innerText = d.carbohydrates;
+        row.insertCell(5).innerText = d.portionSize;
+        row.insertCell(6).innerText = d.category;
+        row.insertCell(7).innerText = d.flags;
+        const actions = row.insertCell(8);
+        
+        // Кнопка добавления фото
+        const addPhotoBtn = document.createElement('button');
+        addPhotoBtn.innerText = '📷';
+        addPhotoBtn.title = 'Добавить фото';
+        addPhotoBtn.onclick = (e) => {
+            e.stopPropagation();
+            addDishPhoto(d.id);
+        };
+        
+        const viewBtn = document.createElement('button');
+        viewBtn.innerText = 'Просмотр';
+        viewBtn.onclick = () => showDishDetails(d);
+        
+        const editBtn = document.createElement('button');
+        editBtn.innerText = 'Редактировать';
+        editBtn.onclick = () => editDish(d);
+        
+        const delBtn = document.createElement('button');
+        delBtn.innerText = 'Удалить';
+        delBtn.onclick = () => deleteDish(d.id);
+        
+        actions.appendChild(addPhotoBtn);
+        actions.appendChild(viewBtn);
+        actions.appendChild(editBtn);
+        actions.appendChild(delBtn);
     }
+}
 
     async function showDishDetails(dish) {
         // загружаем полный объект блюда (чтобы увидеть ингредиенты)
