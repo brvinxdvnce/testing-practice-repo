@@ -25,6 +25,8 @@ public class DishRepository : IDishRepository
 
     public async Task UpdateAsync(Dish dish)
     {
+        if (dish?.Photos?.Count > 5)
+            throw new Exception("Превышен лимит количества фотографий");
         _context.Dishes.Update(dish);
         await _context.SaveChangesAsync();
     }

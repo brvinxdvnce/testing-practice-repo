@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Testing_Practice.Infrastructure.Persistence.Contexts;
 
 namespace Testing_Practice.Controllers;
 
@@ -7,10 +8,12 @@ namespace Testing_Practice.Controllers;
 public class UploadController : ControllerBase
 {
     private readonly IWebHostEnvironment _env;
-
-    public UploadController(IWebHostEnvironment env)
+    private readonly RecipesDbContext _context;
+    
+    public UploadController(IWebHostEnvironment env, RecipesDbContext context)
     {
         _env = env;
+        _context = context;
     }
 
     [HttpPost("dish")]
@@ -18,7 +21,7 @@ public class UploadController : ControllerBase
     {
         if (file == null || file.Length == 0)
             return BadRequest("Файл не выбран");
-    
+        
         // Проверка MIME-типа
         if (!file.ContentType.StartsWith("image/"))
             return BadRequest("Файл должен быть изображением");
@@ -30,7 +33,7 @@ public class UploadController : ControllerBase
     
         if (file.Length > 5 * 1024 * 1024)
             return BadRequest("Файл не должен превышать 5 МБ");
-    
+        
         var fileName = $"{Guid.NewGuid()}{ext}";
         var uploadPath = Path.Combine(_env.WebRootPath, "images", "dishes");
         Directory.CreateDirectory(uploadPath);

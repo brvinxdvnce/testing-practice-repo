@@ -33,6 +33,8 @@ public class ProductsController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult<Product>> Update(Guid id, ProductUpdateDto dto)
     {
+        if (dto?.Photos?.Count > 5) return BadRequest("Превышен лимит количества фотографий"); 
+        
         var existing = await _productService.GetByIdAsync(id);
         if (existing == null) return NotFound();
 
@@ -48,8 +50,16 @@ public class ProductsController : ControllerBase
         if (dto.Flags.HasValue) existing.Flags = dto.Flags.Value;
         if (dto.Photos != null) existing.Photos = dto.Photos;
 
-        await _productService.UpdateAsync(existing);
-        return Ok(existing);
+        
+        try
+        {
+            await _productService.UpdateAsync(existing);
+            return Ok(existing);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
     
     [HttpGet]

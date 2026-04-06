@@ -36,6 +36,8 @@ public class DishesController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult<Dish>> Update(Guid id, DishUpdateDto dto)
     {
+        if (dto?.Photos?.Count > 5) return BadRequest("Превышен лимит количества фотографий"); 
+        
         var existing = await _dishRepository.GetByIdAsync(id);
         if (existing == null) return NotFound();
 
@@ -75,7 +77,7 @@ public class DishesController : ControllerBase
         return NoContent();
     }
     
-    [HttpPost]
+    /*[HttpPost]
     public async Task<ActionResult<Dish>> Create(DishCreateDto dto)
     {
         var dish = new Dish
@@ -102,12 +104,50 @@ public class DishesController : ControllerBase
         if (dto.Proteins.HasValue) dish.Proteins = dto.Proteins.Value;
         if (dto.Fats.HasValue) dish.Fats = dto.Fats.Value;
         if (dto.Carbohydrates.HasValue) dish.Carbohydrates = dto.Carbohydrates.Value;
+        
 
         if (dto.Flags.HasValue) dish.Flags = dto.Flags.Value;
         
         return CreatedAtAction(nameof(GetById), new { id = dish.Id }, dish);
     }
+    */
 
+    [HttpPost]
+    public async Task<ActionResult<Dish>> Create(DishCreateDto dto)
+    {
+        var dish = new Dish
+        {
+            Name = dto.Name,
+            PortionSize = dto.PortionSize,
+            Photos = dto.Photos,
+            Category = dto.Category ?? DishCategory.Snack,
+        
+            // ВАЖНО: Присваиваем значения ТУТ
+            // Если на фронте ввели вручную, берем их, если нет - ставим 0 для авторасчета
+            Calories = dto.Calories ?? 0,
+            Proteins = dto.Proteins ?? 0,
+            Fats = dto.Fats ?? 0,
+            Carbohydrates = dto.Carbohydrates ?? 0,
+            Flags = dto.Flags ?? 0,
+
+            Ingredients = dto.Ingredients.Select(i => new DishIngredient 
+            { 
+                ProductId = i.ProductId, 
+                Amount = i.Amount 
+            }).ToList()
+        };
+
+        bool isCategoryExplicitlySet = dto.Category.HasValue;
+
+        // Теперь, когда мы вызываем CreateAsync, внутри него 
+        // dish.Proteins уже будет равен 60 (а не 0).
+        await _dishService.CreateAsync(dish, isCategoryExplicitlySet);
+
+        // Убираем отсюда лишние присвоения КБЖУ, они уже в объекте!
+    
+        return CreatedAtAction(nameof(GetById), new { id = dish.Id }, dish);
+    }
+    
     [HttpGet("{id}")]
     public async Task<ActionResult<Dish>> GetById(Guid id)
     {

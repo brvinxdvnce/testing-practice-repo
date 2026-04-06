@@ -7,9 +7,6 @@ using Testing_Practice.Domain.Repositories;
 
 namespace Testing_Practice.Tests.UnitTests;
 
-// Тестовый набор для проверки калькулятора КБЖУ блюд.
-// Покрывает требования п. 2.2 и правила автоматического расчета.
-
 /*
 public partial class DishCalculatorServiceTests : IDisposable
 {

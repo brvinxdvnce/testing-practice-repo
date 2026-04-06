@@ -32,6 +32,7 @@ public class DishService : IDishService
     public async Task<Dish> CreateAsync(Dish dish, bool isCategoryExplicitlySet)
     {
         ProcessMacros(dish, isCategoryExplicitlySet);
+        if (dish.Name == "") return new Dish();
         ValidateNutrients(dish);
         await RecalculateDishPropertiesAsync(dish);
         await _dishRepository.AddAsync(dish);
@@ -118,7 +119,7 @@ public class DishService : IDishService
     }
 
     // Требования 2.2 и 2.4: Расчет КБЖУ и Флагов
-    public async Task RecalculateDishPropertiesAsync(Dish dish)
+    /*public async Task RecalculateDishPropertiesAsync(Dish dish)
     {
         if (dish.Ingredients == null || !dish.Ingredients.Any()) return;
 
@@ -151,6 +152,51 @@ public class DishService : IDishService
         if (dish.Carbohydrates == 0) dish.Carbohydrates = calcCarb;
 
         dish.Flags = (ProductFlags)combinedFlags; 
+    }
+    */
+    
+    public async Task RecalculateDishPropertiesAsync(Dish dish)
+    {
+        // Если ингредиентов нет, считать нечего
+        if (dish.Ingredients == null || !dish.Ingredients.Any()) return;
+
+        // Проверяем, нужно ли нам вообще что-то считать (если всё уже заполнено, экономим ресурсы)
+        bool needsNutrients = dish.Calories == 0 || dish.Proteins == 0 || dish.Fats == 0 || dish.Carbohydrates == 0;
+        bool needsFlags = dish.Flags == 0; // Или другое дефолтное значение
+
+        if (!needsNutrients && !needsFlags) return;
+
+        var productIds = dish.Ingredients.Select(i => i.ProductId).Distinct();
+        var products = (await _dishRepository.GetProductsByIdsAsync(productIds)).ToDictionary(p => p.Id);
+
+        double calcCal = 0, calcProt = 0, calcFat = 0, calcCarb = 0;
+        ProductFlags combinedFlags = (ProductFlags.Vegan | ProductFlags.GlutenFree | ProductFlags.SugarFree);
+
+        foreach (var ingredient in dish.Ingredients)
+        {
+            if (products.TryGetValue(ingredient.ProductId, out var p))
+            {
+                calcCal += (p.Calories * ingredient.Amount) / 100;
+                calcProt += (p.Proteins * ingredient.Amount) / 100;
+                calcFat += (p.Fats * ingredient.Amount) / 100;
+                calcCarb += (p.Carbohydrates * ingredient.Amount) / 100;
+            
+                // Побитовое И: флаг останется, только если он есть у ВСЕХ продуктов
+                combinedFlags &= p.Flags;
+            }
+        }
+
+        // Применяем расчеты только к тем полям, которые равны 0
+        if (dish.Calories == 0) dish.Calories = calcCal;
+        if (dish.Proteins == 0) dish.Proteins = calcProt;
+        if (dish.Fats == 0) dish.Fats = calcFat;
+        if (dish.Carbohydrates == 0) dish.Carbohydrates = calcCarb;
+
+        // Если флаги не были установлены (равны 0), ставим вычисленные
+        if (dish.Flags == 0) 
+        {
+            dish.Flags = combinedFlags;
+        }
     }
     
     private void ValidateNutrients(Dish dish)
