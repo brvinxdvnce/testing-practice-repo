@@ -33,3 +33,5 @@ C:\Users\danil\Desktop\testing-practice-repo\backend\Testing-Practice\Testing-Pr
 C:\Users\danil\Desktop\testing-practice-repo\backend\Testing-Practice\Testing-Practice.Infrastructure\obj\Debug\net10.0\Testing-Practice.Infrastructure.pdb
 C:\Users\danil\Desktop\testing-practice-repo\backend\Testing-Practice\Testing-Practice.Infrastructure\obj\Debug\net10.0\Testing-Practice.Infrastructure.genruntimeconfig.cache
 C:\Users\danil\Desktop\testing-practice-repo\backend\Testing-Practice\Testing-Practice.Infrastructure\obj\Debug\net10.0\ref\Testing-Practice.Infrastructure.dll
+C:\Users\danil\Desktop\testing-practice-repo\backend\Testing-Practice\Testing-Practice.Infrastructure\bin\Debug\net10.0\Testing-Practice.Application.dll
+C:\Users\danil\Desktop\testing-practice-repo\backend\Testing-Practice\Testing-Practice.Infrastructure\bin\Debug\net10.0\Testing-Practice.Application.pdb

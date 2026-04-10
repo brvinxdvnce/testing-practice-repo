@@ -721,6 +721,7 @@
           "Microsoft.EntityFrameworkCore": "10.0.5",
           "Microsoft.EntityFrameworkCore.Relational": "10.0.5",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "10.0.1",
+          "Testing-Practice.Application": "1.0.0",
           "Testing-Practice.Domain": "1.0.0"
         },
         "compile": {

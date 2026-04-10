@@ -828,6 +828,19 @@
           "buildTransitive/net8.0/_._": {}
         }
       },
+      "Testing-Practice.Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v10.0",
+        "dependencies": {
+          "Testing-Practice.Domain": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Testing-Practice.Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Testing-Practice.Application.dll": {}
+        }
+      },
       "Testing-Practice.Domain/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v10.0",
@@ -2682,6 +2695,11 @@
         "useSharedDesignerContext.txt"
       ]
     },
+    "Testing-Practice.Application/1.0.0": {
+      "type": "project",
+      "path": "../Testing-Practice.Application/Testing-Practice.Application.csproj",
+      "msbuildProject": "../Testing-Practice.Application/Testing-Practice.Application.csproj"
+    },
     "Testing-Practice.Domain/1.0.0": {
       "type": "project",
       "path": "../Testing-Practice.Domain/Testing-Practice.Domain.csproj",
@@ -2694,6 +2712,7 @@
       "Microsoft.EntityFrameworkCore.Relational >= 10.0.5",
       "Microsoft.EntityFrameworkCore.Tools >= 10.0.5",
       "Npgsql.EntityFrameworkCore.PostgreSQL >= 10.0.1",
+      "Testing-Practice.Application >= 1.0.0",
       "Testing-Practice.Domain >= 1.0.0"
     ]
   },
@@ -2724,6 +2743,9 @@
         "net10.0": {
           "targetAlias": "net10.0",
           "projectReferences": {
+            "C:\\Users\\danil\\Desktop\\testing-practice-repo\\backend\\Testing-Practice\\Testing-Practice.Application\\Testing-Practice.Application.csproj": {
+              "projectPath": "C:\\Users\\danil\\Desktop\\testing-practice-repo\\backend\\Testing-Practice\\Testing-Practice.Application\\Testing-Practice.Application.csproj"
+            },
             "C:\\Users\\danil\\Desktop\\testing-practice-repo\\backend\\Testing-Practice\\Testing-Practice.Domain\\Testing-Practice.Domain.csproj": {
               "projectPath": "C:\\Users\\danil\\Desktop\\testing-practice-repo\\backend\\Testing-Practice\\Testing-Practice.Domain\\Testing-Practice.Domain.csproj"
             }

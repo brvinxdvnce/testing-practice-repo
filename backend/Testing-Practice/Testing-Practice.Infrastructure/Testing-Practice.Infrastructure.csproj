@@ -8,10 +8,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Persistence\Repositories\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.5" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.5" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.5">
@@ -22,6 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\Testing-Practice.Application\Testing-Practice.Application.csproj" />
       <ProjectReference Include="..\Testing-Practice.Domain\Testing-Practice.Domain.csproj" />
     </ItemGroup>
 

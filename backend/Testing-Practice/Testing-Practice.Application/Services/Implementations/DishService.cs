@@ -101,7 +101,7 @@ public class DishService : IDishService
     
     private void ProcessMacros(Dish dish, bool isCategoryExplicitlySet)
     {
-        foreach (var macro in _macrosMap)
+        /*foreach (var macro in _macrosMap)
         {
             if (dish.Name.Contains(macro.Key, StringComparison.OrdinalIgnoreCase))
             {
@@ -115,6 +115,77 @@ public class DishService : IDishService
                 }
                 break; // Применяем только первый найденный макрос
             }
+        }*/
+        
+        /*
+        string originalName = dish.Name;
+        DishCategory? appliedCategory = null;
+    
+        // Проходим по всем макросам
+        foreach (var macro in _macrosMap)
+        {
+            if (originalName.Contains(macro.Key, StringComparison.OrdinalIgnoreCase))
+            {
+                // Удаляем макрос из названия (и лишние пробелы)
+                originalName = Regex.Replace(originalName, Regex.Escape(macro.Key), "", RegexOptions.IgnoreCase).Trim();
+            
+                // Запоминаем категорию только если она еще не была установлена
+                if (appliedCategory == null && !isCategoryExplicitlySet)
+                {
+                    appliedCategory = macro.Value;
+                }
+            }
+        }
+    
+        // Применяем изменения
+        dish.Name = originalName;
+    
+        // Устанавливаем категорию, если нашли хотя бы один макрос и категория не была задана явно
+        if (appliedCategory.HasValue && !isCategoryExplicitlySet)
+        {
+            dish.Category = appliedCategory.Value;
+        }*/
+        
+        if (isCategoryExplicitlySet) 
+        {
+            // Если категория задана явно, всё равно нужно удалить все макросы из названия
+            foreach (var macro in _macrosMap)
+            {
+                dish.Name = Regex.Replace(dish.Name, Regex.Escape(macro.Key), "", RegexOptions.IgnoreCase).Trim();
+            }
+            return;
+        }
+
+        // Находим позиции всех макросов в строке
+        var foundMacros = new List<(int Index, string Macro, DishCategory Category)>();
+
+        foreach (var macro in _macrosMap)
+        {
+            int index = dish.Name.IndexOf(macro.Key, StringComparison.OrdinalIgnoreCase);
+            if (index != -1)
+            {
+                foundMacros.Add((index, macro.Key, macro.Value));
+            }
+        }
+
+        // Если макросы найдены
+        if (foundMacros.Any())
+        {
+            // Сортируем по позиции в строке (по возрастанию индекса)
+            var firstMacro = foundMacros.OrderBy(m => m.Index).First();
+
+            // Устанавливаем категорию по первому встречному макросу
+            dish.Category = firstMacro.Category;
+
+            // Удаляем ВСЕ макросы из названия (не только первый)
+            string processedName = dish.Name;
+            foreach (var macro in _macrosMap)
+            {
+                processedName = Regex.Replace(processedName, Regex.Escape(macro.Key), "", RegexOptions.IgnoreCase)
+                    .Trim();
+            }
+
+            dish.Name = processedName;
         }
     }
 
@@ -212,4 +283,58 @@ public class DishService : IDishService
                 throw new ArgumentException("Сумма БЖУ на 100 грамм блюда не может превышать 100.");
         }
     }
+    
+     public async Task RecalculateDishPropеrtiesAsync(Dish dish)
+{
+    // Если ингредиентов нет, считать нечего
+    if (dish.Ingredients == null || !dish.Ingredients.Any()) return;
+
+    // Проверяем, нужно ли нам вообще что-то считать (если всё уже заполнено, экономим ресурсы)
+    bool needsNutrients = dish.Calories == 0 || dish.Proteins == 0 || dish.Fats == 0 || dish.Carbohydrates == 0;
+    bool needsFlags = dish.Flags == 0;
+
+    if (!needsNutrients && !needsFlags) return;
+
+    var productIds = dish.Ingredients.Select(i => i.ProductId).Distinct();
+    var products = (await _dishRepository.GetProductsByIdsAsync(productIds)).ToDictionary(p => p.Id);
+
+    double calcCal = 0, calcProt = 0, calcFat = 0, calcCarb = 0;
+    ProductFlags combinedFlags = (ProductFlags.Vegan | ProductFlags.GlutenFree | ProductFlags.SugarFree);
+
+    foreach (var ingredient in dish.Ingredients)
+    {
+        // **ВАЛИДАЦИЯ: пропускаем ингредиенты с невалидным количеством**
+        if (ingredient.Amount == null || ingredient.Amount <= 0) continue;
+
+        if (products.TryGetValue(ingredient.ProductId, out var p))
+        {
+            // **ВАЛИДАЦИЯ: пропускаем продукты с отрицательными КБЖУ**
+            // (оставляем 0 как допустимое значение - например, вода)
+            double calories = p.Calories > 0 ? p.Calories : 0;
+            double proteins = p.Proteins > 0 ? p.Proteins : 0;
+            double fats = p.Fats > 0 ? p.Fats : 0;
+            double carbs = p.Carbohydrates > 0 ? p.Carbohydrates : 0;
+            
+            calcCal += (calories * ingredient.Amount) / 100;
+            calcProt += (proteins * ingredient.Amount) / 100;
+            calcFat += (fats * ingredient.Amount) / 100;
+            calcCarb += (carbs * ingredient.Amount) / 100;
+        
+            // Побитовое И: флаг останется, только если он есть у ВСЕХ продуктов
+            combinedFlags &= p.Flags;
+        }
+    }
+
+    // Применяем расчеты только к тем полям, которые равны 0
+    if (dish.Calories == 0) dish.Calories = calcCal;
+    if (dish.Proteins == 0) dish.Proteins = calcProt;
+    if (dish.Fats == 0) dish.Fats = calcFat;
+    if (dish.Carbohydrates == 0) dish.Carbohydrates = calcCarb;
+
+    // Если флаги не были установлены (равны 0), ставим вычисленные
+    if (dish.Flags == 0) 
+    {
+        dish.Flags = combinedFlags;
+    }
+}
 }

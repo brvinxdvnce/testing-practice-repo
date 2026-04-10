@@ -12,6 +12,7 @@
           "Microsoft.EntityFrameworkCore.Relational": "10.0.5",
           "Microsoft.EntityFrameworkCore.Tools": "10.0.5",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "10.0.1",
+          "Testing-Practice.Application": "1.0.0",
           "Testing-Practice.Domain": "1.0.0"
         },
         "runtime": {
@@ -600,6 +601,17 @@
           }
         }
       },
+      "Testing-Practice.Application/1.0.0": {
+        "dependencies": {
+          "Testing-Practice.Domain": "1.0.0"
+        },
+        "runtime": {
+          "Testing-Practice.Application.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
+        }
+      },
       "Testing-Practice.Domain/1.0.0": {
         "runtime": {
           "Testing-Practice.Domain.dll": {
@@ -853,6 +865,11 @@
       "sha512": "sha512-aRZlojCCGEHDKqh43jaDgaVpYETsgd7Nx4g1zwLKMtv4iTo0627715ajEFNpEEBTgLmvZuv8K0EVxc3sM4NWJA==",
       "path": "system.composition.typedparts/9.0.0",
       "hashPath": "system.composition.typedparts.9.0.0.nupkg.sha512"
+    },
+    "Testing-Practice.Application/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     },
     "Testing-Practice.Domain/1.0.0": {
       "type": "project",
