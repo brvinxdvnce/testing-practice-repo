@@ -14,6 +14,11 @@
     <PackageReference Include="Moq" Version="4.20.72" />
     <PackageReference Include="xunit" Version="2.9.3" />
     <PackageReference Include="xunit.runner.visualstudio" Version="3.1.4" />
+
+      <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.0" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.0" />
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
+      <PackageReference Include="coverlet.collector" Version="3.2.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,6 +28,8 @@
   <ItemGroup>
     <ProjectReference Include="..\Testing-Practice.Domain\Testing-Practice.Domain.csproj" />
     <ProjectReference Include="..\Testing-Practice.Application\Testing-Practice.Application.csproj" />
+      <ProjectReference Include="..\Testing-Practice.Infrastructure\Testing-Practice.Infrastructure.csproj" />
+      <ProjectReference Include="..\Testing-Practice.Presentation\Testing-Practice.Presentation.csproj" />
   </ItemGroup>
 
 </Project>

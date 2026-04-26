@@ -12,7 +12,7 @@ public class DishServiceTests : IDisposable
     private readonly Mock<IProductRepository> _productRepositoryMock;
     private readonly DishService _dishService;
 
-    // Setup: Выполняется перед КАЖДЫМ тестом
+    // Setup: Выполняется перед каждым тестом
     public DishServiceTests()
     {
         _dishRepositoryMock = new Mock<IDishRepository>();
@@ -20,10 +20,9 @@ public class DishServiceTests : IDisposable
         _dishService = new DishService(_dishRepositoryMock.Object, _productRepositoryMock.Object);
     }
 
-    // Teardown: Выполняется после КАЖДОГО теста
+    // Teardown: Выполняется после каждого теста
     public void Dispose()
     {
-        // Очистка ресурсов, сброс моков
         _dishRepositoryMock.Invocations.Clear();
         _productRepositoryMock.Invocations.Clear();
     }

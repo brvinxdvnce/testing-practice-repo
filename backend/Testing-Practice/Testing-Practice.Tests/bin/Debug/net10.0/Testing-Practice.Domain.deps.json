@@ -1,0 +1,23 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "Testing-Practice.Domain/1.0.0": {
+        "runtime": {
+          "Testing-Practice.Domain.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Testing-Practice.Domain/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
