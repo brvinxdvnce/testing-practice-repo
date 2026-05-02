@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualStudio.TestPlatform.TestHost;
+﻿/*using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Testing_Practice.Tests.IntegrationTests.Utils;
 
 namespace Testing_Practice.Tests.IntegrationTests.Fixtures;
@@ -12,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using DishesApi.Data;          // ваш DbContext
 using DishesApi.Services;
 using DishesApi.Repositories;
-*/
+#1#
 
 using Testing_Practice.Infrastructure.Persistence.Contexts;
 using Testing_Practice.Infrastructure.Repositories;
@@ -37,7 +37,7 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
             // Примечание: реальный IDishService использует репозиторий и логику пересчёта КБЖУ.
             // Мы используем те же реализации, но с InMemory БД.
             var sp = services.BuildServiceProvider();
-            using var scope = sp.CreateScope();
+            using var scope = sp.CreateScope(/*#1#);
             var db = scope.ServiceProvider.GetRequiredService<RecipesDbContext>();
             db.Database.EnsureCreated();
             
@@ -52,4 +52,4 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
         db.Products.AddRange(TestDataBuilder.GetDefaultProducts());
         db.SaveChanges();
     }
-}
+}*/

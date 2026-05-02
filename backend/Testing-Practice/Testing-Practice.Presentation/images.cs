@@ -5,12 +5,7 @@
 //      /images/dishes/pumpkin.png      - тыква
 //      /images/dishes/svekla.png       - свекла
 //      /images/dishes/water.png        - вода
-//      /images/dishes/meat.png         - мясо 
-//      /images/dishes/meat2.png        - мясо2  
+//      /images/dishes/meat.jpeg        - мясо 
+//      /images/dishes/meat2.jpeg       - мясо2  
 //      /images/dishes/borsch.png       - борщ
-
-
-    
-    // рассчет калорий 
-    // дабл урлы
-    // единообразие добавления
+//      /images/dishes/borsch_vegan.png       - борщ веган

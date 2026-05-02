@@ -1315,6 +1315,56 @@ function getFlagsNames(flagsValue) {
 //     };
 // }
 
+// async function calculateDishNutrition(ingredients, portionSize) {
+//     if (!ingredients.length) return { calories: 0, proteins: 0, fats: 0, carbohydrates: 0 };
+    
+//     let totalCalories = 0;
+//     let totalProteins = 0;
+//     let totalFats = 0;
+//     let totalCarbohydrates = 0;
+//     let totalWeight = 0;
+    
+//     // Сначала рассчитываем общее КБЖУ для ВСЕХ ингредиентов (в граммах)
+//     for (const ing of ingredients) {
+//         try {
+//             const product = await apiRequest(`/products/${ing.productId}`, 'GET');
+//             const amount = ing.amount;
+            
+//             totalCalories += (product.calories * amount) / 100;
+//             totalProteins += (product.proteins * amount) / 100;
+//             totalFats += (product.fats * amount) / 100;
+//             totalCarbohydrates += (product.carbohydrates * amount) / 100;
+//             totalWeight += amount;
+//         } catch (err) {
+//             console.error('Ошибка загрузки продукта:', err);
+//         }
+//     }
+    
+//     // Если указан размер порции, рассчитываем КБЖУ на 1 грамм, затем умножаем на размер порции
+//     if (portionSize && portionSize > 0 && totalWeight > 0) {
+//         const caloriesPerGram = totalCalories / totalWeight;
+//         const proteinsPerGram = totalProteins / totalWeight;
+//         const fatsPerGram = totalFats / totalWeight;
+//         const carbsPerGram = totalCarbohydrates / totalWeight;
+        
+//         return {
+//             calories: +(caloriesPerGram * portionSize).toFixed(2),
+//             proteins: +(proteinsPerGram * portionSize).toFixed(2),
+//             fats: +(fatsPerGram * portionSize).toFixed(2),
+//             carbohydrates: +(carbsPerGram * portionSize).toFixed(2)
+//         };
+//     }
+    
+//     // Если порция не указана, возвращаем общее КБЖУ всех ингредиентов
+//     return {
+//         calories: +(totalCalories).toFixed(2),
+//         proteins: +(totalProteins).toFixed(2),
+//         fats: +(totalFats).toFixed(2),
+//         carbohydrates: +(totalCarbohydrates).toFixed(2)
+//     };
+// }
+
+
 async function calculateDishNutrition(ingredients, portionSize) {
     if (!ingredients.length) return { calories: 0, proteins: 0, fats: 0, carbohydrates: 0 };
     
@@ -1322,40 +1372,24 @@ async function calculateDishNutrition(ingredients, portionSize) {
     let totalProteins = 0;
     let totalFats = 0;
     let totalCarbohydrates = 0;
-    let totalWeight = 0;
     
-    // Сначала рассчитываем общее КБЖУ для ВСЕХ ингредиентов (в граммах)
+    // Рассчитываем КБЖУ только на основе суммы всех ингредиентов
     for (const ing of ingredients) {
         try {
             const product = await apiRequest(`/products/${ing.productId}`, 'GET');
             const amount = ing.amount;
             
+            // КБЖУ продукта на 100г, пересчитываем на указанный вес ингредиента
             totalCalories += (product.calories * amount) / 100;
             totalProteins += (product.proteins * amount) / 100;
             totalFats += (product.fats * amount) / 100;
             totalCarbohydrates += (product.carbohydrates * amount) / 100;
-            totalWeight += amount;
         } catch (err) {
             console.error('Ошибка загрузки продукта:', err);
         }
     }
     
-    // Если указан размер порции, рассчитываем КБЖУ на 1 грамм, затем умножаем на размер порции
-    if (portionSize && portionSize > 0 && totalWeight > 0) {
-        const caloriesPerGram = totalCalories / totalWeight;
-        const proteinsPerGram = totalProteins / totalWeight;
-        const fatsPerGram = totalFats / totalWeight;
-        const carbsPerGram = totalCarbohydrates / totalWeight;
-        
-        return {
-            calories: +(caloriesPerGram * portionSize).toFixed(2),
-            proteins: +(proteinsPerGram * portionSize).toFixed(2),
-            fats: +(fatsPerGram * portionSize).toFixed(2),
-            carbohydrates: +(carbsPerGram * portionSize).toFixed(2)
-        };
-    }
-    
-    // Если порция не указана, возвращаем общее КБЖУ всех ингредиентов
+    // Возвращаем общее КБЖУ всех ингредиентов (вес порции НЕ учитывается!)
     return {
         calories: +(totalCalories).toFixed(2),
         proteins: +(totalProteins).toFixed(2),
