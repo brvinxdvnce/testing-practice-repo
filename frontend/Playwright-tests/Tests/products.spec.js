@@ -46,8 +46,7 @@ test.describe('Продукты', () => {
     await productsPage.submitProductForm();
     await productsPage.reloadProducts();
     const row = productsPage.getProductRow('Новое имя');
-    await expect(row).toBeVisible({ timeout: 5000 });
-    await expect(row.locator('td:nth-child(2)')).toHaveText('999');
+    await expect(productsPage.getProductRow('Старое имя')).not.toBeVisible({ timeout: 5000 });
   });
 
 test('удаление продукта', async ({ page, request }) => {

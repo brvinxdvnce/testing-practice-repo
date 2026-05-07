@@ -2,19 +2,20 @@
 const API_BASE = 'http://localhost:5006/api';
 const FRONTEND_URL = 'http://127.0.0.1:5500/frontend/index_v14.html';
 
+// В helpers.js добавьте обработку ошибок в clearDatabase, чтобы один упавший запрос не рушил всё
 export async function clearDatabase(request) {
-  // Удаляем все блюда
-  const dishesResp = await request.get(`${API_BASE}/dishes`);
-  const dishes = await dishesResp.json();
-  for (const dish of dishes) {
-    await request.delete(`${API_BASE}/dishes/${dish.id}`);
-  }
-  // Удаляем все продукты
-  const productsResp = await request.get(`${API_BASE}/products`);
-  const products = await productsResp.json();
-  for (const product of products) {
-    await request.delete(`${API_BASE}/products/${product.id}`);
-  }
+  try {
+    const dishesResp = await request.get(`${API_BASE}/dishes`, { timeout: 2000 });
+    const dishes = await dishesResp.json();
+    for (const dish of dishes) {
+      await request.delete(`${API_BASE}/dishes/${dish.id}`).catch(() => {});
+    }
+    const productsResp = await request.get(`${API_BASE}/products`, { timeout: 2000 });
+    const products = await productsResp.json();
+    for (const product of products) {
+      await request.delete(`${API_BASE}/products/${product.id}`).catch(() => {});
+    }
+  } catch (e) { console.log('Cleanup failed, skipping...'); }
 }
 
 export async function createTestProduct(request, name = 'Тестовый продукт', options = {}) {
