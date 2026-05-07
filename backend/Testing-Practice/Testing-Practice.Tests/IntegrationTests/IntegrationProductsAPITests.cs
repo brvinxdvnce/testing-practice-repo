@@ -1,6 +1,4 @@
-﻿using Testing_Practice.Tests.IntegrationTests.Fixtures;
-
-namespace Testing_Practice.Tests.IntegrationTests.Utils;
+﻿namespace Testing_Practice.Tests.IntegrationTests;
 
 using System.Net;
 using System.Net.Http.Json;
@@ -55,7 +53,7 @@ public partial class IntegrationTests : IClassFixture<IntegrationTestsFixture>
             await client.DeleteAsync($"/api/products/{productId}");
     }
 
-    // GET по несуществующему id → 404
+    // GET по несуществующему id > 404
     [Fact]
     public async Task Get_Product_ByInvalidId_ReturnsNotFound()
     {
@@ -64,7 +62,7 @@ public partial class IntegrationTests : IClassFixture<IntegrationTestsFixture>
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
-    // GET по id → корректное тело
+    // GET по id > корректное тело
     [Fact]
     public async Task Get_Product_ById_ReturnsCorrectBody()
     {
@@ -206,7 +204,7 @@ public partial class IntegrationTests : IClassFixture<IntegrationTestsFixture>
 
     // POST – некорректные значения (сумма БЖУ > 100 или отрицательные)
     [Theory]
-    [InlineData(0, 40, 40, 30)]      // сумма 110 > 100
+    [InlineData(0, 40, 40, 20.1)]
     [InlineData(-10, 10, 10, 10)]
     [InlineData(10, -10, 10, 10)]
     [InlineData(10, 10, -10, 10)]
@@ -261,7 +259,7 @@ public partial class IntegrationTests : IClassFixture<IntegrationTestsFixture>
     [Theory]
     [InlineData(0, 0, 0, 0)]
     [InlineData(1000, 0, 0, 0)]
-    [InlineData(500, 100, 0, 0)]     // сумма ровно 100 — допустимо
+    [InlineData(500, 100, 0, 0)]
     [InlineData(0.1, 0.1, 0.1, 0.1)]
     public async Task Post_Product_WithBoundaryValues_ReturnsCreated(
         double calories, double proteins, double fats, double carbohydrates)
@@ -290,7 +288,7 @@ public partial class IntegrationTests : IClassFixture<IntegrationTestsFixture>
         Assert.Equal(dto.Flags, body.Flags);
     }
 
-    // PUT – несуществующий продукт → 404
+    // PUT – несуществующий продукт > 404
     [Fact]
     public async Task Put_Product_WithInvalidId_ReturnsNotFound()
     {
@@ -300,7 +298,7 @@ public partial class IntegrationTests : IClassFixture<IntegrationTestsFixture>
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
-    // DELETE – несуществующий продукт → 404
+    // DELETE – несуществующий продукт > 404
     [Fact]
     public async Task Delete_Product_ByInvalidId_ReturnsNotFound()
     {
@@ -309,7 +307,7 @@ public partial class IntegrationTests : IClassFixture<IntegrationTestsFixture>
         Assert.Equal(HttpStatusCode.NotFound, response.StatusCode);
     }
 
-    // PUT – полное обновление с проверкой сохранения в БД
+    // PUT – полное обновление с проверкой сохранения
     [Fact]
     public async Task Put_Product_WithBoundaryValues_ReturnsOkAndPersistsUpdate()
     {
@@ -358,7 +356,7 @@ public partial class IntegrationTests : IClassFixture<IntegrationTestsFixture>
         Assert.Single(body.Photos);
     }
 
-    // PUT – слишком короткое имя → 400
+    // PUT – слишком короткое имя > 400
     [Fact]
     public async Task Put_Product_WithTooShortName_ReturnsBadRequest()
     {

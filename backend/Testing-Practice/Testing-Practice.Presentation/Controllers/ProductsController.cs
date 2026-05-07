@@ -83,13 +83,24 @@ public class ProductsController : ControllerBase
             Flags = dto.Flags, Photos = dto.Photos
         };
 
-        await _productService.CreateAsync(product);
-        return CreatedAtAction(nameof(GetAll), new { id = product.Id }, product);
+        try
+        {
+            await _productService.CreateAsync(product);
+            return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
 
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {
+        var exists = await _productRepository.GetByIdAsync(id);
+        if (exists is null) 
+            return NotFound();
+        
         try 
         {
             await _productService.DeleteAsync(id);

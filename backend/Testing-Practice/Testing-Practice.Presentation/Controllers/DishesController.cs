@@ -36,6 +36,9 @@ public class DishesController : ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult<Dish>> Update(Guid id, DishUpdateDto dto)
     {
+        if (dto.Name != null && dto.Name.Trim().Length < 2)
+            return BadRequest("Название должно содержать минимум 2 символа.");
+        
         if (dto?.Photos?.Count > 5) return BadRequest("Превышен лимит количества фотографий"); 
         
         var existing = await _dishRepository.GetByIdAsync(id);
@@ -115,6 +118,11 @@ public class DishesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Dish>> Create(DishCreateDto dto)
     {
+        if (string.IsNullOrWhiteSpace(dto.Name) || dto.Name.Trim().Length < 2)
+            return BadRequest("Название должно содержать минимум 2 символа.");
+        if (dto.Ingredients == null || dto.Ingredients.Count == 0)
+            return BadRequest("Состав не может быть пустым.");
+        
         var dish = new Dish
         {
             Name = dto.Name,
@@ -139,13 +147,15 @@ public class DishesController : ControllerBase
 
         bool isCategoryExplicitlySet = dto.Category.HasValue;
 
-        // Теперь, когда мы вызываем CreateAsync, внутри него 
-        // dish.Proteins уже будет равен 60 (а не 0).
-        await _dishService.CreateAsync(dish, isCategoryExplicitlySet);
-
-        // Убираем отсюда лишние присвоения КБЖУ, они уже в объекте!
-    
-        return CreatedAtAction(nameof(GetById), new { id = dish.Id }, dish);
+        try
+        {
+            await _dishService.CreateAsync(dish, isCategoryExplicitlySet);
+            return CreatedAtAction(nameof(GetById), new { id = dish.Id }, dish);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
     }
     
     [HttpGet("{id}")]
