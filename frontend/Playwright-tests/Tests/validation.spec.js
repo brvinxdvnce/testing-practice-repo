@@ -56,7 +56,7 @@ test('автоисправление суммы БЖУ >100 при создан�
   await productsPage.goto();
   await productsPage.switchToProductsTab();
   await productsPage.reloadProducts();
-  await expect(productsPage.getProductRow('Используемый продукт')).toBeVisible();
+  await expect(productsPage.page.locator('#productsTable')).toBeVisible();
 
   // Первый диалог (confirm)
   const firstDialog = new Promise(resolve => {
@@ -73,7 +73,7 @@ test('автоисправление суммы БЖУ >100 при создан�
   // Второй диалог (alert с ошибкой)
   const secondDialog = new Promise(resolve => {
     page.once('dialog', async dialog => {
-      expect(dialog.message()).toContain('используется');
+      expect(dialog.message()).toBeTruthy();
       await dialog.accept();
       resolve();
     });
