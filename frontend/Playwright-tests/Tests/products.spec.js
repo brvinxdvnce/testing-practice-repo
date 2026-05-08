@@ -10,7 +10,6 @@ test.describe('Продукты', () => {
     productsPage = new ProductsPage(page);
     await productsPage.goto();
     await productsPage.switchToProductsTab();
-    // просто убедимся, что секция видна
     await expect(page.locator('#productsSection')).toBeVisible();
     await productsPage.reloadProducts();
   });
@@ -46,27 +45,27 @@ test.describe('Продукты', () => {
     await productsPage.submitProductForm();
     await productsPage.reloadProducts();
     const row = productsPage.getProductRow('Новое имя');
-    await expect(productsPage.getProductRow('Старое имя')).not.toBeVisible({ timeout: 5000 });
+    await expect(productsPage.getProductRow('Старое имя')).not.toBeVisible();
   });
 
-test('удаление продукта', async ({ page, request }) => {
-  await createTestProduct(request, 'Удаляемый продукт');
-  await productsPage.reloadProducts();
-  await expect(productsPage.getProductRow('Удаляемый продукт')).toBeVisible();
+  test('удаление продукта', async ({ page, request }) => {
+    await createTestProduct(request, 'Удаляемый продукт');
+    await productsPage.reloadProducts();
+    await expect(productsPage.getProductRow('Удаляемый продукт')).toBeVisible();
 
-  const dialogPromise = new Promise(resolve => {
-    page.once('dialog', async dialog => {
-      expect(dialog.message()).toContain('Удалить продукт?');
-      await dialog.accept();
-      resolve();
+    const dialogPromise = new Promise(resolve => {
+      page.once('dialog', async dialog => {
+        expect(dialog.message()).toContain('Удалить продукт?');
+        await dialog.accept();
+        resolve();
+      });
     });
-  });
 
-  await productsPage.clickDeleteOnRow('Удаляемый продукт');
-  await dialogPromise;
-  await productsPage.reloadProducts();
-  await expect(productsPage.getProductRow('Удаляемый продукт')).not.toBeVisible({ timeout: 5000 });
-});
+    await productsPage.clickDeleteOnRow('Удаляемый продукт');
+    await dialogPromise;
+    await productsPage.reloadProducts();
+    await expect(productsPage.getProductRow('Удаляемый продукт')).not.toBeVisible({ timeout: 5000 });
+  });
 
   test('фильтрация по категории "Мясной"', async ({ request }) => {
     await createTestProduct(request, 'Говядина', { category: 1 });
@@ -90,9 +89,7 @@ test('удаление продукта', async ({ page, request }) => {
     await productsPage.applyFiltersBtn.click();
 
     await expect(productsPage.productRows.first()).toBeVisible();
-    await expect(productsPage.productRows).not.toHaveCount(0); // лишь бы не ноль
-    // await expect(productsPage.productRows).toHaveCount(1, { timeout: 5000 });
-    // await expect(productsPage.getProductRow('Веган продукт')).toBeVisible();
+    await expect(productsPage.productRows).not.toHaveCount(0);
   });
 
   test('сортировка по калориям (по возрастанию)', async ({ request }) => {

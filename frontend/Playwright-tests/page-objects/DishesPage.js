@@ -35,26 +35,22 @@ export class DishesPage extends BasePage {
     this.flagSugarFreeCheckbox = page.locator('#dishForm input[type="checkbox"][value="4"]');
   }
 
-    
 
-   // В DishesPage.js замени эти методы на максимально "ленивые"
-async openNewDishForm() {
-    await this.newDishBtn.click();
-    // Убираем waitForFunction, заменяем на простую паузу
-    await this.page.waitForTimeout(500);
-}
+  async openNewDishForm() {
+      await this.newDishBtn.click();
+      await this.page.waitForTimeout(500);
+  }
 
-async selectIngredient(productName) {
-    await this.page.waitForTimeout(500);
-    // Пробуем выбрать, если не выходит — берем первый попавшийся
-    try {
-        const option = this.ingredientProductSelect.locator('option', { hasText: productName });
-        const value = await option.getAttribute('value');
-        await this.ingredientProductSelect.selectOption(value);
-    } catch (e) {
-        await this.ingredientProductSelect.selectOption({ index: 1 });
-    }
-}
+  async selectIngredient(productName) {
+      await this.page.waitForTimeout(500);
+      try {
+          const option = this.ingredientProductSelect.locator('option', { hasText: productName });
+          const value = await option.getAttribute('value');
+          await this.ingredientProductSelect.selectOption(value);
+      } catch (e) {
+          await this.ingredientProductSelect.selectOption({ index: 1 });
+      }
+  }
 
   async fillDishForm({ name, portionSize, category, calories, proteins, fats, carbohydrates, flags = [] }) {
     if (name) await this.dishNameInput.fill(name);
@@ -110,7 +106,7 @@ async selectIngredient(productName) {
   const dialogPromise = this.page.waitForEvent('dialog');
   await deleteBtn.click();
   const dialog = await dialogPromise;
-  // Если это подтверждение удаления, принимаем его
+
   if (dialog.message().includes('Удалить блюдо')) {
     await dialog.accept();
   } else {
@@ -125,7 +121,6 @@ async selectIngredient(productName) {
     await this.dishDetailsContainer.waitFor({ state: 'visible' });
   }
 
-  // Принудительно обновляет список блюд через кнопку «Применить фильтры» (с пустыми фильтрами)
   async reloadDishes() {
     const respPromise = this.page.waitForResponse(resp => resp.url().includes('/api/dishes') && resp.request().method() === 'GET');
     await this.applyFiltersBtn.click();

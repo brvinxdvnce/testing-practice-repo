@@ -81,7 +81,6 @@ export class ProductsPage extends BasePage {
     await row.locator('button:has-text("Удалить")').click();
   }
 
-  // Принудительно обновляет список продуктов, нажимая «Применить фильтры» (с пустыми фильтрами)
   async reloadProducts() {
     const respPromise = this.page.waitForResponse(resp => resp.url().includes('/api/products') && resp.request().method() === 'GET');
     await this.applyFiltersBtn.click();

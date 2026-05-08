@@ -2,7 +2,6 @@
 const API_BASE = 'http://localhost:5006/api';
 const FRONTEND_URL = 'http://127.0.0.1:5500/frontend/index_v14.html';
 
-// В helpers.js добавьте обработку ошибок в clearDatabase, чтобы один упавший запрос не рушил всё
 export async function clearDatabase(request) {
   try {
     const dishesResp = await request.get(`${API_BASE}/dishes`, { timeout: 2000 });
